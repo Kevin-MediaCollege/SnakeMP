@@ -1,9 +1,7 @@
-package com.snakybo.snakemp.client.screen;
+package com.snakybo.snakemp.common.screen;
 
 import com.snakybo.sengine2d.gui.GUIButton;
-import com.snakybo.sengine2d.gui.GUIText;
 import com.snakybo.sengine2d.rendering.Window;
-import com.snakybo.sengine2d.utils.math.Vector2f;
 import com.snakybo.sengine2d.utils.math.Vector2i;
 import com.snakybo.snakemp.client.Client;
 import com.snakybo.snakemp.common.Main;
@@ -14,10 +12,7 @@ public class ScreenMain extends Screen {
 		super();
 		
 		// Title text
-		GUIText titleText = new GUIText("Comic Sans.ttf", 48);
-		titleText.setPosition(new Vector2f(Window.getWidth() / 2, 40));
-		titleText.setText("Snake Multiplayer");
-		titleText.setAnchor(GUIText.CENTER);
+		addTitleText();
 		
 		// Button host server
         GUIButton hostButton = new GUIButton(
@@ -28,7 +23,7 @@ public class ScreenMain extends Screen {
                 Textures.BUTTON_HOST_PRESS,
                 GUIButton.CENTER,
                 () -> {
-                    Client.setActiveScreen(ScreenHost.class);
+                    Client.setActiveScreen(Screen.SCREEN_HOST);
                 }
             );
 		
@@ -41,7 +36,7 @@ public class ScreenMain extends Screen {
                 Textures.BUTTON_JOIN_PRESS,
                 GUIButton.CENTER,
 				() -> {
-	                Client.setActiveScreen(ScreenJoin.class);
+	                Client.setActiveScreen(Screen.SCREEN_JOIN);
 				}
             );
 		
@@ -59,8 +54,6 @@ public class ScreenMain extends Screen {
 			);
 		
 		// Add components
-		addComponent(titleText);
-		
 		addComponent(hostButton);
 		addComponent(joinButton);
 		addComponent(quitButton);

@@ -2,19 +2,22 @@ package com.snakybo.snakemp.common.network;
 
 public enum ENetworkMessages {
 	CLIENT_REQUEST_JOIN                 (0x01),    // Format: 1[name] 2[color.r] 3[color.g] 4[color.b]
-	
 	CLIENT_LEAVE                        (0x02),    // Format: 1[id]
+
+	CLIENT_UPDATE_READY                 (0x03),    // Format: 1[id] 2[ready (0/1)]
 	
-	SERVER_REJECT_CLIENT_FULL           (0x03),
-	SERVER_REJECT_CLIENT_PLAYING        (0x04),
-	SERVER_REJECT_CLIENT_EXISTS         (0x05),
+	SERVER_REJECT_CLIENT_FULL           (0x04),
+	SERVER_REJECT_CLIENT_PLAYING        (0x05),
+	SERVER_REJECT_CLIENT_EXISTS         (0x06),
 	
-	SERVER_WELCOME_CLIENT               (0x06),    // Format: 1[id]
+	SERVER_WELCOME_CLIENT               (0x07),    // Format: 1[id]
 	
-	SERVER_CLIENT_LEFT                  (0x07),    // Format: 1[id]
+	SERVER_CLIENT_LEFT                  (0x08),    // Format: 1[id]
+	SERVER_CLIENT_JOINED                (0x09),    // Format: 1[id] 2[name] 3[color.r] 4[color.g] 5[color.b]
 	
-	SERVER_STOPPED                      (0x08);
+	SERVER_CLIENT_UPDATE_READY          (0x11),    // Format: 1[id] 2[ready (0/1)]
 	
+	SERVER_STOPPED                      (0x12);
 	
 	/*// Lobby client to server messages
 	CLIENT_REQUEST_JOIN					(0x24),

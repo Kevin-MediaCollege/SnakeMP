@@ -10,14 +10,14 @@ public class Server implements IUpdatable {
 	private ClientManager clientManager;
 	private ServerWorld serverWorld;
 	
-	public Server(int port) {
+	public Server(int udpPort, int tcpPort) {
 		ServerLogger.initialize();
 		ServerLogger.log("Initializing");
 		
 		clientManager = new ClientManager(this);
 		serverWorld = new ServerWorld();
 		
-		ServerConnection.initialize(this, port);
+		ServerConnection.initialize(this, udpPort, tcpPort);
 		ServerLogger.log("Server started");
 	}
 	
@@ -30,6 +30,8 @@ public class Server implements IUpdatable {
 		ServerLogger.log("Shutting down");
 		
 		ServerConnection.destroy();
+		
+		ServerLogger.log("Shut down");
 	}
 	
 	public ClientManager getClientManager() {

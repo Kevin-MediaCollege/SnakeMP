@@ -9,7 +9,12 @@ public class Main {
 	private static SEngine2D engine;
 	private static Window window;
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
+		final String javaVersion = Runtime.class.getPackage().getImplementationVersion();
+		
+		if(!javaVersion.startsWith("1.8"))
+			throw new Exception("You need Java 8 to run this application! (http://java.com/en/download/manual.jsp)");
+		
 		window = new Window(1280, 720, "Snake Multiplayer");
 		engine = new SEngine2D(window, new SnakeMultiplayer());
 		

@@ -15,16 +15,18 @@ public class ClientData {
 	private int ping;
 	
 	private boolean isAlive;
+	private boolean isReady;
 	
 	public ClientData() {
-		setId(0);
-		setName("Player");
-		setColor(new Vector3f((float)Math.random(), (float)Math.random(), (float)Math.random()));
-		setPosition(new Vector2i());
-		setName(name);
-		setLength(1);
-		setPing(999);
-		setIsAlive(false);
+		id = 0;
+		name = "Player-" + (int)(Math.random() * 100);
+		color = new Vector3f((float)Math.random(), (float)Math.random(), (float)Math.random());
+		position = new Vector2i();
+		length = 1;
+		ping = 999;
+		
+		isAlive = false;
+		isReady = false;
 	}
 	
 	public void setId(int id) {
@@ -55,6 +57,10 @@ public class ClientData {
 		this.isAlive = isAlive;
 	}
 	
+	public void setIsReady(boolean isReady) {
+		this.isReady = isReady;
+	}
+	
 	public int getId() {
 		return id;
 	}
@@ -81,5 +87,9 @@ public class ClientData {
 	
 	public boolean isAlive() {
 		return isAlive;
+	}
+	
+	public boolean isReady() {
+		return isReady;
 	}
 }

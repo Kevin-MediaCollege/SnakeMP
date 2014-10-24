@@ -5,32 +5,28 @@ import com.snakybo.sengine2d.component.IUpdatable;
 import com.snakybo.sengine2d.core.Input;
 import com.snakybo.sengine2d.rendering.Renderer;
 import com.snakybo.snakemp.client.network.ClientConnection;
-import com.snakybo.snakemp.client.screen.Screen;
-import com.snakybo.snakemp.client.screen.ScreenLobby;
-import com.snakybo.snakemp.client.screen.ScreenMain;
+import com.snakybo.snakemp.client.network.ClientList;
 import com.snakybo.snakemp.common.data.ClientData;
+import com.snakybo.snakemp.common.screen.Screen;
 
 public class Client implements IUpdatable, IRenderable {
-	private static volatile Class<? extends Screen> newScreen;
+	private static volatile Screen newScreen;
 	
 	private static Screen activeScreen;
 		
-	private ClientData clientData;
+	private ClientList clientList;
 	
 	public Client() {
-		clientData = new ClientData();
+		clientList = new ClientList();
+		clientList.addClient(new ClientData());
 		
-		setActiveScreen(ScreenMain.class);
+		setActiveScreen(Screen.SCREEN_MAIN);
 	}
 	
 	@Override
 	public void update(Input input, float delta) {
 		if(newScreen != null) {
-			try {
-				activeScreen = newScreen.newInstance();
-			} catch(InstantiationException | IllegalAccessException e) {
-				e.printStackTrace();
-			}
+			activeScreen = newScreen;
 			newScreen = null;
 		}
 		
@@ -49,16 +45,22 @@ public class Client implements IUpdatable, IRenderable {
 	public void onServerJoin(String stringId) {
 		int id = (int)Float.parseFloat(stringId);
 		
-		clientData.setId(id);
+		clientList.getClientAt(0).setId(id);
 		
-		setActiveScreen(ScreenLobby.class);
+		setActiveScreen(Screen.SCREEN_LOBBY);
+		
+		Screen.SCREEN_LOBBY.addClient(clientList.getClientAt(0));
 	}
 	
-	public ClientData getClientData() {
-		return clientData;
+	public ClientData getData() {
+		return clientList.getClientAt(0);
 	}
 	
-	public static void setActiveScreen(Class<? extends Screen> newScreen) {
+	public ClientList getClientList() {
+		return clientList;
+	}
+	
+	public static void setActiveScreen(Screen newScreen) {
 		Client.newScreen = newScreen;
 	}
 }
