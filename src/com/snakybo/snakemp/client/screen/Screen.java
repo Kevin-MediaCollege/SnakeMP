@@ -10,7 +10,7 @@ import com.snakybo.sengine2d.gui.GUIComponent;
 import com.snakybo.sengine2d.gui.GUIText;
 import com.snakybo.sengine2d.rendering.Renderer;
 import com.snakybo.sengine2d.rendering.Window;
-import com.snakybo.sengine2d.utils.Vector2f;
+import com.snakybo.sengine2d.utils.math.Vector2f;
 import com.snakybo.snakemp.common.Main;
 
 public class Screen implements IUpdatable, IRenderable {

@@ -1,18 +1,36 @@
 package com.snakybo.snakemp.common.network;
 
 public enum ENetworkMessages {
-	// Lobby client to server messages
-	CLIENT_UPDATE_READY					(0x01),
-	CLIENT_UPDATE_CHAT					(0x02),
+	CLIENT_REQUEST_JOIN                 (0x01),    // Format: 1[name] 2[color.r] 3[color.g] 4[color.b]
+	
+	CLIENT_LEAVE                        (0x02),    // Format: 1[id]
+	
+	SERVER_REJECT_CLIENT_FULL           (0x03),
+	SERVER_REJECT_CLIENT_PLAYING        (0x04),
+	SERVER_REJECT_CLIENT_EXISTS         (0x05),
+	
+	SERVER_WELCOME_CLIENT               (0x06),    // Format: 1[id]
+	
+	SERVER_CLIENT_LEFT                  (0x07),    // Format: 1[id]
+	
+	SERVER_STOPPED                      (0x08);
+	
+	
+	/*// Lobby client to server messages
+	CLIENT_REQUEST_JOIN					(0x24),
+	
+	CLIENT_UPDATE_READY                 (0x01),
+	CLIENT_UPDATE_CHAT                  (0x02),
 	
 	// Lobby server to client messages
-	SERVER_WELCOME_CLIENT				(0x03),
+	SERVER_WELCOME_CLIENT               (0x03),
 	
-	SERVER_ACCEPT_CLIENT				(0x04),
+	SERVER_ACCEPT_CLIENT                (0x04),
 	
 	SERVER_REJECT_CLIENT_FULL			(0x05),
 	SERVER_REJECT_CLIENT_INVALID_NAME	(0x06),
 	SERVER_REJECT_CLIENT_PLAYING		(0x07),
+	SERVER_REJECT_CLIENT_ANOTHER_INSTANCE	(0x25),
 	
 	SERVER_CLIENT_KICK					(0x08),
 	
@@ -41,7 +59,7 @@ public enum ENetworkMessages {
 	SERVER_NEW_PICKUP					(0x23),
 	
 	// Keep-alive message
-	KEEP_ALIVE							(0x99);
+	KEEP_ALIVE							(0x99);*/
 	
 	private final int id;
 	
@@ -51,5 +69,18 @@ public enum ENetworkMessages {
 	
 	public int id() {
 		return id;
+	}
+	
+	public static ENetworkMessages toId(String stringId) {
+		if(stringId != null) {
+			final ENetworkMessages[] values = values();
+			final int intId = Integer.parseInt(stringId);			
+			
+			for(ENetworkMessages message : values)
+				if(intId == message.id())
+					return message;
+		}
+		
+		return null;
 	}
 }

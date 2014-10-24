@@ -5,6 +5,7 @@ import com.snakybo.sengine2d.core.Input;
 import com.snakybo.sengine2d.core.SEngine2D;
 import com.snakybo.sengine2d.rendering.Renderer;
 import com.snakybo.snakemp.client.Client;
+import com.snakybo.snakemp.common.data.Textures;
 import com.snakybo.snakemp.server.Server;
 
 public class SnakeMultiplayer implements Game {
@@ -16,6 +17,8 @@ public class SnakeMultiplayer implements Game {
 	@Override
 	public void init(SEngine2D engine) {
 		instance = this;
+		
+		Textures.initialize();
 		
 		client = new Client();
 	}
@@ -31,9 +34,6 @@ public class SnakeMultiplayer implements Game {
 	@Override
 	public void render(Renderer renderer) {
 		client.render(renderer);
-		
-		if(server != null)
-			server.render(renderer);
 	}
 	
 	@Override
@@ -46,11 +46,11 @@ public class SnakeMultiplayer implements Game {
 		System.exit(0);
 	}
 	
-	public void startServer() {
+	public void startServer(int port) {
 		if(server != null)
 			return;
 		
-		server = new Server();
+		server = new Server(port);
 	}
 	
 	public void stopServer() {
@@ -59,6 +59,14 @@ public class SnakeMultiplayer implements Game {
 		
 		server.destroy();
 		server = null;
+	}
+	
+	public Client getClient() {
+		return client;
+	}
+	
+	public Server getServer() {
+		return server;
 	}
 	
 	public static SnakeMultiplayer getInstance() {

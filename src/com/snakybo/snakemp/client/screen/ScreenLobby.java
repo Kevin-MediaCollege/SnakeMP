@@ -10,13 +10,9 @@ import com.snakybo.snakemp.client.network.ClientConnection;
 import com.snakybo.snakemp.common.SnakeMultiplayer;
 import com.snakybo.snakemp.common.data.Textures;
 
-public class ScreenJoin extends Screen {
-	private boolean isJoining;
-	
-	public ScreenJoin() {
+public class ScreenLobby extends Screen {
+	public ScreenLobby() {
 		super();
-		
-		isJoining = false;
 		
 		// Title text
 		GUIText titleText = new GUIText("Comic Sans.ttf", 48);
@@ -27,7 +23,7 @@ public class ScreenJoin extends Screen {
 		// Create server text
 		GUIText createServerText = new GUIText("Comic Sans.ttf", 34);
 		createServerText.setPosition(new Vector2f(Window.getWidth() / 2, 87));
-		createServerText.setText("Join a server");
+		createServerText.setText("Lobby");
 		createServerText.setAnchor(GUIText.CENTER);
 		
 		// Button join server
@@ -39,13 +35,7 @@ public class ScreenJoin extends Screen {
                 Textures.BUTTON_JOIN_PRESS,
 				GUIButton.RIGHT,
 				() -> {
-					if(!isJoining) {
-						// TODO: Address
-						// TODO: Port
-						ClientConnection.initialize(SnakeMultiplayer.getInstance().getClient(), "localhost", 1337);
-						
-						isJoining = true;
-					}
+					
 				}
 			);
 		
@@ -58,8 +48,10 @@ public class ScreenJoin extends Screen {
                 Textures.BUTTON_BACK_PRESS,
 				GUIButton.RIGHT,
 				() -> {
-					if(!isJoining)
-						Client.setActiveScreen(ScreenMain.class);
+					SnakeMultiplayer.getInstance().stopServer();
+					
+					ClientConnection.destroy();
+					Client.setActiveScreen(ScreenMain.class);
 				}
 			);
 		

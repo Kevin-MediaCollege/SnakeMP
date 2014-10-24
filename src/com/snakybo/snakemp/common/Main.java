@@ -4,8 +4,6 @@ import com.snakybo.sengine2d.core.SEngine2D;
 import com.snakybo.sengine2d.rendering.Window;
 
 public class Main {
-	// TODO: Fix button bounds
-	
 	public static final String VERSION = "0.01 Alpha";
 	
 	private static SEngine2D engine;
