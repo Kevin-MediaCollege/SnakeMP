@@ -9,7 +9,7 @@ public class Config {
 	
 	public static final int SNAKE_PART_SIZE_PIXELS = 4;
 	
-	public static final int MAX_CLIENTS = 2;
+	public static final int MAX_CLIENTS = 9;
 	public static final int MAX_CHAT_LOGS = 24;
 	
 	public static String serverAddress = "127.0.0.1";

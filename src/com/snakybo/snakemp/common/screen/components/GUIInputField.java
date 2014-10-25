@@ -7,9 +7,11 @@ import static com.snakybo.sengine2d.core.Input.KeyCode.C;
 import static com.snakybo.sengine2d.core.Input.KeyCode.D;
 import static com.snakybo.sengine2d.core.Input.KeyCode.DELETE;
 import static com.snakybo.sengine2d.core.Input.KeyCode.E;
+import static com.snakybo.sengine2d.core.Input.KeyCode.END;
 import static com.snakybo.sengine2d.core.Input.KeyCode.F;
 import static com.snakybo.sengine2d.core.Input.KeyCode.G;
 import static com.snakybo.sengine2d.core.Input.KeyCode.H;
+import static com.snakybo.sengine2d.core.Input.KeyCode.HOME;
 import static com.snakybo.sengine2d.core.Input.KeyCode.I;
 import static com.snakybo.sengine2d.core.Input.KeyCode.J;
 import static com.snakybo.sengine2d.core.Input.KeyCode.K;
@@ -21,6 +23,16 @@ import static com.snakybo.sengine2d.core.Input.KeyCode.LSHIFT;
 import static com.snakybo.sengine2d.core.Input.KeyCode.M;
 import static com.snakybo.sengine2d.core.Input.KeyCode.MINUS;
 import static com.snakybo.sengine2d.core.Input.KeyCode.N;
+import static com.snakybo.sengine2d.core.Input.KeyCode.NUMPAD0;
+import static com.snakybo.sengine2d.core.Input.KeyCode.NUMPAD1;
+import static com.snakybo.sengine2d.core.Input.KeyCode.NUMPAD2;
+import static com.snakybo.sengine2d.core.Input.KeyCode.NUMPAD3;
+import static com.snakybo.sengine2d.core.Input.KeyCode.NUMPAD4;
+import static com.snakybo.sengine2d.core.Input.KeyCode.NUMPAD5;
+import static com.snakybo.sengine2d.core.Input.KeyCode.NUMPAD6;
+import static com.snakybo.sengine2d.core.Input.KeyCode.NUMPAD7;
+import static com.snakybo.sengine2d.core.Input.KeyCode.NUMPAD8;
+import static com.snakybo.sengine2d.core.Input.KeyCode.NUMPAD9;
 import static com.snakybo.sengine2d.core.Input.KeyCode.NUM_0;
 import static com.snakybo.sengine2d.core.Input.KeyCode.NUM_1;
 import static com.snakybo.sengine2d.core.Input.KeyCode.NUM_2;
@@ -33,11 +45,11 @@ import static com.snakybo.sengine2d.core.Input.KeyCode.NUM_8;
 import static com.snakybo.sengine2d.core.Input.KeyCode.NUM_9;
 import static com.snakybo.sengine2d.core.Input.KeyCode.O;
 import static com.snakybo.sengine2d.core.Input.KeyCode.P;
+import static com.snakybo.sengine2d.core.Input.KeyCode.PERIOD;
 import static com.snakybo.sengine2d.core.Input.KeyCode.Q;
 import static com.snakybo.sengine2d.core.Input.KeyCode.R;
 import static com.snakybo.sengine2d.core.Input.KeyCode.RALT;
 import static com.snakybo.sengine2d.core.Input.KeyCode.RCONTROL;
-import static com.snakybo.sengine2d.core.Input.KeyCode.RETURN;
 import static com.snakybo.sengine2d.core.Input.KeyCode.RIGHT;
 import static com.snakybo.sengine2d.core.Input.KeyCode.RSHIFT;
 import static com.snakybo.sengine2d.core.Input.KeyCode.S;
@@ -46,7 +58,7 @@ import static com.snakybo.sengine2d.core.Input.KeyCode.T;
 import static com.snakybo.sengine2d.core.Input.KeyCode.U;
 import static com.snakybo.sengine2d.core.Input.KeyCode.V;
 import static com.snakybo.sengine2d.core.Input.KeyCode.W;
-import static com.snakybo.sengine2d.core.Input.KeyCode.*;
+import static com.snakybo.sengine2d.core.Input.KeyCode.X;
 import static com.snakybo.sengine2d.core.Input.KeyCode.Y;
 import static com.snakybo.sengine2d.core.Input.KeyCode.Z;
 import static org.lwjgl.opengl.GL11.GL_BLEND;
@@ -171,7 +183,10 @@ public class GUIInputField extends GUIComponent {
 			if(input.getMouseX() >= x && input.getMouseX() <= x + width && input.getMouseY() >= y && input.getMouseY() <= y + height) {
 				setIsActive(true);
 			} else {
-				setIsActive(false);
+				if(isActive) {
+					setIsActive(false);
+					handler.onFocusLost();
+				}
 			}
 		}
 		
@@ -310,8 +325,6 @@ public class GUIInputField extends GUIComponent {
 			}
 			
 			cursorPos++;
-		} else if(key == RETURN) {
-			handler.onEnter();
 		}
 	}
 	
@@ -429,7 +442,11 @@ public class GUIInputField extends GUIComponent {
 		return value;
 	}
 	
+	public boolean isActive() {
+		return isActive;
+	}
+	
 	public interface InputFieldHandler {
-		void onEnter();
+		void onFocusLost();
 	}
 }

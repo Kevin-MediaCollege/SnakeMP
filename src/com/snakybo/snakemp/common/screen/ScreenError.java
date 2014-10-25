@@ -10,11 +10,11 @@ public class ScreenError extends Screen {
 	private volatile String newError;
 	
 	public ScreenError() {
-		super();
+		super(true);
 		
 		// Text
 		addTitleText();
-		addText(PIXELMIX_FONT, 34, new Vector2i(Window.getWidth() / 2, 87), "Error", GUIText.CENTER);
+		addText(PIXELMIX_FONT, 34, new Vector2i(Window.getWidth() / 2, 67), "Error", GUIText.CENTER);
 		
 		addBackButton();
 	}

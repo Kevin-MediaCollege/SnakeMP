@@ -20,11 +20,11 @@ public class ScreenHost extends Screen {
 	private GUIText errorText;
 	
 	public ScreenHost() {
-		super();
+		super(true);
 		
 		// Text		
 		addTitleText();
-		addText(PIXELMIX_FONT, 34, new Vector2i(Window.getWidth() / 2, 70), "Create a server", GUIText.CENTER);
+		addText(PIXELMIX_FONT, 34, new Vector2i(Window.getWidth() / 2, 67), "Create a server", GUIText.CENTER);
 		
 		addBackButton();
 		

@@ -8,7 +8,7 @@ import com.snakybo.sengine2d.network.UDPServer;
 import com.snakybo.snakemp.common.data.Config;
 import com.snakybo.snakemp.common.network.ENetworkMessages;
 import com.snakybo.snakemp.server.Server;
-import com.snakybo.snakemp.server.ServerLogger;
+import com.snakybo.snakemp.server.ServerLog;
 import com.snakybo.snakemp.server.client.ClientServerData;
 
 /** @author Kevin Krol
@@ -24,9 +24,11 @@ public class ServerConnection {
 		
 		ServerConnection.server = server;
 		
+		ServerLog.log("Starting server");
+		
 		try {
 			udpServer = new UDPServer(Config.udpPort, (m, a, p)->onUDPMessageReceived(m, a, p));
-			ServerLogger.log("UDP server started on port " + Config.udpPort);
+			ServerLog.log("UDP server started on port " + Config.udpPort);
 		} catch(SocketException e) {
 			e.printStackTrace();
 		}
@@ -36,32 +38,30 @@ public class ServerConnection {
 		if(udpServer == null)
 			return;
 		
-		sendUDP(ENetworkMessages.SERVER_STOPPED);
-		
 		udpServer.close();
 		udpServer = null;
 	}
 	
-	public static void sendUDP(ENetworkMessages messageId, String... messages) {
+	public static void sendUDP(ENetworkMessages messageId, Object... messages) {
 		final ClientServerData[] clients = server.getClientManager().getClients();
 		
 		for(int i = 0; i < clients.length; i++)
 			sendUDP(clients[i], messageId, messages);
 	}
 	
-	public static void sendUDP(ClientServerData client, ENetworkMessages messageId, String... messages) {
+	public static void sendUDP(ClientServerData client, ENetworkMessages messageId, Object... messages) {
 		if(client != null)
 			sendUDP(client.getAddress(), client.getPort(), messageId, messages);
 	}
 	
-	public static void sendUDP(InetAddress address, int port, ENetworkMessages messageId, String... messages) {
+	public static void sendUDP(InetAddress address, int port, ENetworkMessages messageId, Object... messages) {
 		if(udpServer == null || !udpServer.isOpen())
 			return;
 		
 		String message = messageId.id() + "#";
 		
 		for(int i = 0; i < messages.length; i++)
-			message += (messages[i] + "#");
+			message += (String.valueOf(messages[i]) + "#");
 		
 		try {
 			udpServer.send(address, port, message);
@@ -86,6 +86,12 @@ public class ServerConnection {
 			break;
 		case CLIENT_UPDATE_READY:
 			server.getClientManager().onClientReadyChange(parts[1], parts[2]);
+			break;
+		case CLIENT_UPDATE_COLOR:
+			server.getClientManager().onClientColorChange(parts[1], parts[2], parts[3], parts[4]);
+			break;
+		case CLIENT_LOADED:
+			server.getClientManager().onClientLoaded(parts[1]);
 			break;
 		default:
 			System.err.println("[UDP] Server received an invalid message ID: " + id);

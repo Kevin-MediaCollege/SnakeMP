@@ -1,23 +1,26 @@
 package com.snakybo.snakemp.common.network;
 
 public enum ENetworkMessages {
-	CLIENT_REQUEST_JOIN                 (0x01),    // Format: 1[name] 2[color.r] 3[color.g] 4[color.b]
+	CLIENT_REQUEST_JOIN                 (0x01),    // Format: 1[name]
 	CLIENT_LEAVE                        (0x02),    // Format: 1[id]
 
 	CLIENT_UPDATE_READY                 (0x03),    // Format: 1[id] 2[ready (0/1)]
+	CLIENT_UPDATE_COLOR                 (0x04),    // Format: 1[id] 2[color.r] 3[color.g] 4[color.b]
 	
-	SERVER_REJECT_CLIENT_FULL           (0x04),
-	SERVER_REJECT_CLIENT_PLAYING        (0x05),
-	SERVER_REJECT_CLIENT_EXISTS         (0x06),
+	CLIENT_LOADED                       (0x05),    // Format: 1[id]
 	
-	SERVER_WELCOME_CLIENT               (0x07),    // Format: 1[id]
+	SERVER_REJECT_CLIENT_FULL           (0x06),
+	SERVER_REJECT_CLIENT_PLAYING        (0x07),
+	SERVER_REJECT_CLIENT_EXISTS         (0x08),
 	
-	SERVER_CLIENT_LEFT                  (0x08),    // Format: 1[id]
-	SERVER_CLIENT_JOINED                (0x09),    // Format: 1[id] 2[name] 3[color.r] 4[color.g] 5[color.b]
+	SERVER_WELCOME_CLIENT               (0x09),    // Format: 1[id]
 	
-	SERVER_CLIENT_UPDATE_READY          (0x11),    // Format: 1[id] 2[ready (0/1)]
+	SERVER_CLIENT_JOINED                (0x10),    // Format: 1[id] 2[name]
+	SERVER_CLIENT_LEFT                  (0x11),    // Format: 1[id]
+	SERVER_CLIENT_INFO                  (0x12),    // Format: 1[id] 2[name] 3[color.r] 4[color.g] 5[color.b]
 	
-	SERVER_STOPPED                      (0x12);
+	SERVER_COUNTDOWN_CHANGE             (0x13),    // Format: 1[state (0/1)]
+	SERVER_START_GAME                   (0x14);
 	
 	/*// Lobby client to server messages
 	CLIENT_REQUEST_JOIN					(0x24),

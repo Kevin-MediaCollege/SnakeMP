@@ -7,7 +7,7 @@ import com.snakybo.snakemp.common.data.Config;
 
 /** @author Kevin Krol
  * @date Oct 23, 2014 */
-public class ServerLogger {
+public class ServerLog {
 	private static List<String> logs;
 	
 	public static void initialize() {

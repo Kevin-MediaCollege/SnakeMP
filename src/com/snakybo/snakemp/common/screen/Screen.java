@@ -26,6 +26,7 @@ public class Screen implements IUpdatable, IRenderable {
 	public static final ScreenJoin SCREEN_JOIN = new ScreenJoin();
 	public static final ScreenLobby SCREEN_LOBBY = new ScreenLobby();
 	public static final ScreenError SCREEN_ERROR = new ScreenError();
+	public static final ScreenGame SCREEN_GAME = new ScreenGame();
 	
 	public static final String PIXELMIX_FONT = "pixelmix.ttf";
 	
@@ -33,10 +34,11 @@ public class Screen implements IUpdatable, IRenderable {
 	
 	private GUIText errorText;
 	
-	public Screen() {
+	public Screen(boolean addVersion) {
 		components = new ArrayList<GUIComponent>();
 		
-		addText(PIXELMIX_FONT, 12, new Vector2i(5, Window.getHeight() - 20), "Version: " + Main.VERSION, GUIText.LEFT);
+		if(addVersion)
+			addText(PIXELMIX_FONT, 12, new Vector2i(5, Window.getHeight() - 20), "Version: " + Main.VERSION, GUIText.LEFT);
 	}
 	
 	@Override
@@ -47,8 +49,8 @@ public class Screen implements IUpdatable, IRenderable {
 	
 	@Override
 	public void render(Renderer renderer) {
-		for(GUIComponent component : components)
-			component.render(renderer);
+		for(int i = 0; i < components.size(); i++)
+			components.get(i).render(renderer);
 	}
 	
 	protected GUIComponent addComponent(GUIComponent component) {

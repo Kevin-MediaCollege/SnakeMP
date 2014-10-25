@@ -1,5 +1,6 @@
 package com.snakybo.snakemp.common.screen;
 
+import com.snakybo.sengine2d.core.Input;
 import com.snakybo.sengine2d.core.Input.KeyCode;
 import com.snakybo.sengine2d.gui.GUIButton;
 import com.snakybo.sengine2d.gui.GUIText;
@@ -17,12 +18,14 @@ public class ScreenJoin extends Screen {
 	private GUIInputField udpPortField;
 	private GUIInputField tcpPortField;
 	
+	private String newError;
+	
 	public ScreenJoin() {
-		super();
+		super(true);
 		
 		// Text
 		addTitleText();
-		addText(PIXELMIX_FONT, 34, new Vector2i(Window.getWidth() / 2, 87), "Join a server", GUIText.CENTER);
+		addText(PIXELMIX_FONT, 34, new Vector2i(Window.getWidth() / 2, 67), "Join a server", GUIText.CENTER);
 		
 		addBackButton();
 		
@@ -96,5 +99,19 @@ public class ScreenJoin extends Screen {
 		addComponent(ipField);
 		addComponent(udpPortField);
 		addComponent(tcpPortField);
+	}
+	
+	@Override
+	public void update(Input input, float delta) {
+		super.update(input, delta);
+		
+		if(newError != null) {
+			setErrorText(newError, 500);
+			newError = null;
+		}
+	}
+	
+	public void setErrorMessage(String error) {
+		newError = error;
 	}
 }

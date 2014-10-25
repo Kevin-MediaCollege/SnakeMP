@@ -7,7 +7,6 @@ import com.snakybo.sengine2d.utils.math.Vector2i;
 import com.snakybo.sengine2d.utils.math.Vector3f;
 import com.snakybo.snakemp.client.Client;
 import com.snakybo.snakemp.common.Main;
-import com.snakybo.snakemp.common.SnakeMultiplayer;
 import com.snakybo.snakemp.common.data.Config;
 import com.snakybo.snakemp.common.screen.components.GUIInputField;
 import com.snakybo.snakemp.common.screen.components.GUITextButton;
@@ -16,7 +15,7 @@ public class ScreenMain extends Screen {
 	private GUIInputField playerNameField;
 	
 	public ScreenMain() {
-		super();
+		super(true);
 		
 		// Title text
 		addTitleText();
@@ -28,7 +27,6 @@ public class ScreenMain extends Screen {
                 () -> {
                 	if(playerNameField.getValue().length() > 0) {
                 		Config.playerName = playerNameField.getValue();
-                		SnakeMultiplayer.getInstance().getClient().getData().setName(playerNameField.getValue());
                 		
 						Client.setActiveScreen(Screen.SCREEN_HOST);
 					} else {
@@ -44,7 +42,6 @@ public class ScreenMain extends Screen {
 				() -> {
 					if(playerNameField.getValue().length() > 0) {
 						Config.playerName = playerNameField.getValue();
-						SnakeMultiplayer.getInstance().getClient().getData().setName(playerNameField.getValue());
 						
 						Client.setActiveScreen(Screen.SCREEN_JOIN);
 					} else {
