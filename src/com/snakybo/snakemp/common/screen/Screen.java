@@ -3,6 +3,8 @@ package com.snakybo.snakemp.common.screen;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.newdawn.slick.Color;
+
 import com.snakybo.sengine2d.component.IRenderable;
 import com.snakybo.sengine2d.component.IUpdatable;
 import com.snakybo.sengine2d.core.Input;
@@ -11,13 +13,12 @@ import com.snakybo.sengine2d.gui.GUIComponent;
 import com.snakybo.sengine2d.gui.GUIText;
 import com.snakybo.sengine2d.rendering.Renderer;
 import com.snakybo.sengine2d.rendering.Window;
-import com.snakybo.sengine2d.utils.math.Vector2f;
 import com.snakybo.sengine2d.utils.math.Vector2i;
 import com.snakybo.snakemp.client.Client;
 import com.snakybo.snakemp.client.network.ClientConnection;
 import com.snakybo.snakemp.common.Main;
 import com.snakybo.snakemp.common.SnakeMultiplayer;
-import com.snakybo.snakemp.common.data.Textures;
+import com.snakybo.snakemp.common.screen.components.GUITextButton;
 
 public class Screen implements IUpdatable, IRenderable {
 	public static final ScreenMain SCREEN_MAIN = new ScreenMain();
@@ -26,23 +27,22 @@ public class Screen implements IUpdatable, IRenderable {
 	public static final ScreenLobby SCREEN_LOBBY = new ScreenLobby();
 	public static final ScreenError SCREEN_ERROR = new ScreenError();
 	
+	public static final String PIXELMIX_FONT = "pixelmix.ttf";
+	
 	private List<GUIComponent> components;
+	
+	private GUIText errorText;
 	
 	public Screen() {
 		components = new ArrayList<GUIComponent>();
 		
-		GUIText versionText = new GUIText("Comic Sans.ttf", 12);
-		versionText.setPosition(new Vector2f(5, Window.getHeight() - 10));
-		versionText.setText("Version: " + Main.VERSION);
-		versionText.setAnchor(GUIText.CENTER);
-		
-		addComponent(versionText);
+		addText(PIXELMIX_FONT, 12, new Vector2i(5, Window.getHeight() - 20), "Version: " + Main.VERSION, GUIText.LEFT);
 	}
 	
 	@Override
 	public void update(Input input, float delta) {
-		for(GUIComponent component : components)
-			component.update(input, delta);
+		for(int i = 0; i < components.size(); i++)
+			components.get(i).update(input, delta);
 	}
 	
 	@Override
@@ -52,20 +52,25 @@ public class Screen implements IUpdatable, IRenderable {
 	}
 	
 	protected GUIComponent addComponent(GUIComponent component) {
-		components.add(component);
+		if(!components.contains(component)) {
+			components.add(component);
 		
-		return component;
+			return component;
+		}
+		
+		return null;
 	}
 	
 	protected void removeComponent(GUIComponent component) {
-		components.remove(component);
+		if(components.contains(component))
+			components.remove(component);
 	}
 	
 	protected GUIText addTitleText() {
-		return addText("Comic Sans.ttf", 48, new Vector2f(Window.getWidth() / 2, 30), "Snake Multiplayer", GUIText.CENTER);
+		return addText(PIXELMIX_FONT, 48, new Vector2i(Window.getWidth() / 2, 7), "Snake Multiplayer", GUIText.CENTER);
 	}
 	
-	protected GUIText addText(String font, int size, Vector2f position, String string, int anchor) {
+	protected GUIText addText(String font, int size, Vector2i position, String string, int anchor) {
 		GUIText text = new GUIText(font, size);
 		
 		text.setPosition(position);
@@ -75,14 +80,20 @@ public class Screen implements IUpdatable, IRenderable {
 		return (GUIText)addComponent(text);
 	}
 	
+	protected void setErrorText(String string, int yPos) {
+		removeComponent(errorText);
+		
+		errorText =  addText(PIXELMIX_FONT, 16, new Vector2i(Window.getWidth() / 2, yPos), string, GUIText.CENTER);
+		
+		errorText.setColor(Color.red);
+		
+		addComponent(errorText);
+	}
+	
 	protected GUIButton addBackButton() {
-		GUIButton button = new GUIButton(
-			new Vector2i(Window.getWidth() - 12, Window.getHeight() - 87),
-			new Vector2i(250, 75),
-			Textures.BUTTON_BACK_NORMAL,
-            Textures.BUTTON_BACK_HOVER,
-            Textures.BUTTON_BACK_PRESS,
-			GUIButton.RIGHT,
+		GUITextButton button = new GUITextButton(
+			new Vector2i(Window.getWidth() - (GUITextButton.SIZE.x / 2) - 10, Window.getHeight() - 62),
+			GUIButton.LEFT,
 			() -> {
 				SnakeMultiplayer.getInstance().stopServer();
 					
@@ -90,6 +101,8 @@ public class Screen implements IUpdatable, IRenderable {
 				Client.setActiveScreen(Screen.SCREEN_MAIN);
 			}
 		);
+		
+		button.setText(24, "BACK");
 		
 		return (GUIButton)addComponent(button);
 	}

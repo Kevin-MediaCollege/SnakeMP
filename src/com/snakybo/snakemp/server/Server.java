@@ -10,14 +10,14 @@ public class Server implements IUpdatable {
 	private ClientManager clientManager;
 	private ServerWorld serverWorld;
 	
-	public Server(int udpPort, int tcpPort) {
+	public Server() {
 		ServerLogger.initialize();
-		ServerLogger.log("Initializing");
+		ServerLogger.log("Initializing server");
 		
 		clientManager = new ClientManager(this);
 		serverWorld = new ServerWorld();
 		
-		ServerConnection.initialize(this, udpPort, tcpPort);
+		ServerConnection.initialize(this);
 		ServerLogger.log("Server started");
 	}
 	

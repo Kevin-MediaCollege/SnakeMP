@@ -46,11 +46,11 @@ public class SnakeMultiplayer implements Game {
 		System.exit(0);
 	}
 	
-	public void startServer(int udpPort, int tcpPort) {
+	public void startServer() {
 		if(server != null)
 			return;
 		
-		server = new Server(udpPort, tcpPort);
+		server = new Server();
 	}
 	
 	public void stopServer() {

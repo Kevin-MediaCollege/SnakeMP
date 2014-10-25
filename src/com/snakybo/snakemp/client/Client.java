@@ -50,6 +50,8 @@ public class Client implements IUpdatable, IRenderable {
 		setActiveScreen(Screen.SCREEN_LOBBY);
 		
 		Screen.SCREEN_LOBBY.addClient(clientList.getClientAt(0));
+		
+		System.out.println("Connected to server");
 	}
 	
 	public ClientData getData() {

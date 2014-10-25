@@ -34,8 +34,10 @@ public class ClientList {
 	}
 	
 	public void onClientLeave(int id) {
-		removeClient(id);
-		Screen.SCREEN_LOBBY.removeClient(id);
+		if(id != getClientAt(0).getId()) {
+			removeClient(id);
+			Screen.SCREEN_LOBBY.removeClient(id);
+		}
 	}
 	
 	public void addClient(ClientData client) {

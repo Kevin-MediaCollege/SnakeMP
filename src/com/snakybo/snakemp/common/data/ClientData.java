@@ -19,7 +19,7 @@ public class ClientData {
 	
 	public ClientData() {
 		id = 0;
-		name = "Player-" + (int)(Math.random() * 100);
+		name = Config.playerName;
 		color = new Vector3f((float)Math.random(), (float)Math.random(), (float)Math.random());
 		position = new Vector2i();
 		length = 1;

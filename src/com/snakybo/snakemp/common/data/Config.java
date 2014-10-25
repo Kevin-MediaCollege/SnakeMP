@@ -11,4 +11,10 @@ public class Config {
 	
 	public static final int MAX_CLIENTS = 2;
 	public static final int MAX_CHAT_LOGS = 24;
+	
+	public static String serverAddress = "127.0.0.1";
+	public static String playerName = "Player";
+	
+	public static int udpPort = 1337;
+	public static int tcpPort = 1338;
 }
