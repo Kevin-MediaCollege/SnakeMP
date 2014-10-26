@@ -111,6 +111,11 @@ public class ScreenJoin extends Screen {
 		}
 	}
 	
+	@Override
+	public void reset() {
+		removeErrorText();
+	}
+	
 	public void setErrorMessage(String error) {
 		newError = error;
 	}

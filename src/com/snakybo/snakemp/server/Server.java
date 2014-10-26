@@ -15,16 +15,12 @@ public class Server implements IUpdatable {
 	private boolean countdownInProgress;
 	
 	public Server() {
-		ServerLog.initialize();
-		ServerLog.log("Initializing server");
-		
 		clientManager = new ClientManager(this);
-		serverWorld = new ServerWorld();
+		serverWorld = new ServerWorld(this);
 		
 		countdownInProgress = false;
 		
 		ServerConnection.initialize(this);
-		ServerLog.log("Server started");
 	}
 	
 	@Override
@@ -42,12 +38,18 @@ public class Server implements IUpdatable {
 			}
 			
 			if(everyoneReady) {
-				if(!countdownInProgress)
-					ServerConnection.sendUDP(ENetworkMessages.SERVER_COUNTDOWN_CHANGE, String.valueOf(1));
+				if(!countdownInProgress) {
+					ServerConnection.sendUDP(ENetworkMessages.SERVER_COUNTDOWN_CHANGE, 1);
+					countdownInProgress = true;
+				}
 			} else {
-				if(countdownInProgress)
-					ServerConnection.sendUDP(ENetworkMessages.SERVER_COUNTDOWN_CHANGE, String.valueOf(0));
+				if(countdownInProgress) {
+					ServerConnection.sendUDP(ENetworkMessages.SERVER_COUNTDOWN_CHANGE, 0);
+					countdownInProgress = false;
+				}
 			}
+		} else {
+			serverWorld.update(input, delta);
 		}
 	}
 	
@@ -55,8 +57,6 @@ public class Server implements IUpdatable {
 		ServerLog.log("Shutting down");
 		
 		ServerConnection.destroy();
-		
-		ServerLog.log("Shut down");
 	}
 	
 	public void checkIfEveryoneIsReady() {
@@ -72,7 +72,7 @@ public class Server implements IUpdatable {
 		}
 		
 		if(everyoneLoaded)
-			ServerConnection.sendUDP(ENetworkMessages.SERVER_START_GAME);
+			serverWorld.spawnPlayers(clientManager.getClients());
 	}
 	
 	public ClientManager getClientManager() {

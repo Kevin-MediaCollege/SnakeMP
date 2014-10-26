@@ -10,6 +10,7 @@ import javax.swing.Timer;
 import com.snakybo.sengine2d.network.UDPClient;
 import com.snakybo.sengine2d.utils.math.Vector3f;
 import com.snakybo.snakemp.client.Client;
+import com.snakybo.snakemp.common.SnakeMultiplayer;
 import com.snakybo.snakemp.common.data.Config;
 import com.snakybo.snakemp.common.network.ENetworkMessages;
 import com.snakybo.snakemp.common.screen.Screen;
@@ -57,7 +58,7 @@ public class ClientConnection {
 		if(udpClient == null || !udpClient.isOpen())
 			return;
 		
-		sendUDP(ENetworkMessages.CLIENT_LEAVE, String.valueOf(client.getData().getId()));
+		sendUDP(ENetworkMessages.CLIENT_LEAVE, String.valueOf(client.getPlayer().getId()));
 		
 		udpClient.close();
 		udpClient = null;
@@ -111,10 +112,6 @@ public class ClientConnection {
 		case SERVER_COUNTDOWN_CHANGE:
 			client.setCountdownState((int)Float.parseFloat(parts[1]));
 			break;
-		// Start the game
-		case SERVER_START_GAME:
-			Client.setActiveScreen(Screen.SCREEN_GAME);
-			break;
 		// Another client's info
 		case SERVER_CLIENT_INFO:
 			client.getClientList().onClientInfoReceived(parts);
@@ -126,6 +123,18 @@ public class ClientConnection {
 		// Update the color of a client
 		case CLIENT_UPDATE_COLOR:
 			client.getClientList().getClientWithId((int)Float.parseFloat(parts[1])).setColor(new Vector3f(Float.parseFloat(parts[2]), Float.parseFloat(parts[3]), Float.parseFloat(parts[4])));
+			break;
+		case CLIENT_SPAWNED:
+			client.getClientList().getClientWithId((int)Float.parseFloat(parts[1])).spawn((int)Float.parseFloat(parts[2]), (int)Float.parseFloat(parts[3]), (int)Float.parseFloat(parts[4]));
+			break;
+		case SERVER_START_GAME:
+			SnakeMultiplayer.getInstance().getClient().startGame();
+			break;
+		case CIENT_UPDATE:
+			client.getClientList().getClientWithId((int)Float.parseFloat(parts[1])).update((int)Float.parseFloat(parts[2]), (int)Float.parseFloat(parts[3]), (int)Float.parseFloat(parts[4]));
+			break;
+		case CLIENT_UPDATE_DIRECTION:
+			client.getClientList().getClientWithId((int)Float.parseFloat(parts[1])).getPart(0).setDirection((int)Float.parseFloat(parts[2]));
 			break;
 		default:
 			System.err.println("[UDP] Client received an invalid message ID: " + id);

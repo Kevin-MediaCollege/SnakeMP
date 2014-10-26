@@ -1,24 +1,21 @@
-package com.snakybo.snakemp.common.data;
+package com.snakybo.snakemp.client.player;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.snakybo.sengine2d.utils.math.Vector2i;
 import com.snakybo.sengine2d.utils.math.Vector3f;
-import com.snakybo.snakemp.client.world.SnakePart;
+import com.snakybo.snakemp.common.data.Config;
 import com.snakybo.snakemp.common.util.Utils;
 
 public class ClientData {
 	private final int id;
 	
-	private List<SnakePart> parts;
+	protected List<SnakePart> parts;
 	
 	private Vector3f color;
 	
 	private String name;
-	
-	private int x;
-	private int y;
-	private int direction;
 	
 	private int length;
 	
@@ -35,10 +32,49 @@ public class ClientData {
 		this.id = id;
 		this.name = name;
 		this.color = color;
-		this.length = 7;
+		this.length = Config.START_SNAKE_LENGTH;
 		
 		this.isReady = false;
 		this.isAlive = true;
+	}
+	
+	public void spawn(int x, int y, int direction) {
+		parts.clear();
+		System.out.println(x + " " + y);
+		
+		addPart(x, y, direction);
+		
+		for(int i = 1; i < getLength(); i++) {
+			int pX = x;
+			int pY = y;
+			
+			switch(direction) {
+			case 0:
+				pY = y - i;
+				break;
+			case 1:
+				pX = x - i;
+				break;
+			case 2:
+				pY = y + i;
+				break;
+			case 3:
+				pX = x + i;
+				break;
+			}
+			
+			addPart(pX, pY, direction);
+		}
+	}
+	
+	public void addPart(int x, int y, int direction) {
+		parts.add(new SnakePart(x, y, direction));
+	}
+	
+	public void update(int x, int y, int direction) {
+		parts.get(0).setX(x);
+		parts.get(0).setY(y);
+		parts.get(0).setDirection(direction);
 	}
 	
 	public void setColor(Vector3f color) {
@@ -61,6 +97,17 @@ public class ClientData {
 		this.isAlive = isAlive;
 	}
 	
+	public SnakePart getPart(int index) {
+		if(parts.size() > 0)
+			return parts.get(index);
+		
+		return null;
+	}
+	
+	public SnakePart[] getParts() {
+		return parts.toArray(new SnakePart[parts.size()]);
+	}
+	
 	public int getId() {
 		return id;
 	}
@@ -69,8 +116,16 @@ public class ClientData {
 		return color;
 	}
 	
+	public Vector2i getPosition() {
+		return new Vector2i(parts.get(0).getX(), parts.get(0).getY());
+	}
+	
 	public String getName() {
 		return name;
+	}
+	
+	public int getDirection() {
+		return parts.get(0).getDirection();
 	}
 	
 	public int getLength() {

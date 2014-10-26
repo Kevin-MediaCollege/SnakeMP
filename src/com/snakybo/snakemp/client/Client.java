@@ -8,7 +8,9 @@ import com.snakybo.sengine2d.core.Input;
 import com.snakybo.sengine2d.rendering.Renderer;
 import com.snakybo.snakemp.client.network.ClientConnection;
 import com.snakybo.snakemp.client.network.ClientList;
-import com.snakybo.snakemp.common.data.ClientData;
+import com.snakybo.snakemp.client.player.ClientData;
+import com.snakybo.snakemp.client.player.Player;
+import com.snakybo.snakemp.client.world.ClientWorld;
 import com.snakybo.snakemp.common.network.ENetworkMessages;
 import com.snakybo.snakemp.common.screen.Screen;
 
@@ -17,6 +19,7 @@ public class Client implements IUpdatable, IRenderable {
 	
 	private static Screen activeScreen;
 		
+	private ClientWorld clientWorld;
 	private ClientList clientList;
 	
 	private Timer countdownTimer;
@@ -38,20 +41,34 @@ public class Client implements IUpdatable, IRenderable {
 	@Override
 	public void update(Input input, float delta) {
 		if(countdownTimer.isRunning()) {
-			if(countdownIterations == 5) {
+			if(countdownIterations == 1) { // FIXME: set to 5
 				countdownIterations = 0;
-				ClientConnection.sendUDP(ENetworkMessages.CLIENT_LOADED, String.valueOf(getData().getId()));
+				ClientConnection.sendUDP(ENetworkMessages.CLIENT_LOADED, String.valueOf(getPlayer().getId()));
 				countdownTimer.stop();
-				Screen.SCREEN_LOBBY.removeCountdownText();
 			}
 		}
 		
 		if(newScreen != null) {
+			if(activeScreen != null)
+				activeScreen.reset();
+			
 			activeScreen = newScreen;
 			newScreen = null;
 		}
 		
+		if(clientWorld != null) {
+			getPlayer().update(input, delta);
+			clientWorld.update(input, delta);
+		}
+		
 		activeScreen.update(input, delta);
+	}
+	
+	public void startGame() {
+		clientWorld = new ClientWorld(clientList.getClients());
+		
+		Client.setActiveScreen(Screen.SCREEN_GAME);
+		Screen.SCREEN_LOBBY.reset();
 	}
 	
 	@Override
@@ -66,7 +83,7 @@ public class Client implements IUpdatable, IRenderable {
 	public void onServerJoin(String stringId) {
 		final int id = (int)Float.parseFloat(stringId);
 		
-		ClientData self = new ClientData(id);
+		ClientData self = new Player(id);
 		
 		ClientConnection.sendUDP(ENetworkMessages.CLIENT_UPDATE_COLOR, self.getId(), self.getColor().x, self.getColor().y, self.getColor().z);
 		
@@ -79,8 +96,12 @@ public class Client implements IUpdatable, IRenderable {
 		System.out.println("Connected to server");
 	}
 	
-	public ClientData getData() {
-		return clientList.getClientAt(0);
+	public Player getPlayer() {
+		return (Player)clientList.getClientAt(0);
+	}
+	
+	public ClientWorld getClientWorld() {
+		return clientWorld;
 	}
 	
 	public ClientList getClientList() {
@@ -95,10 +116,8 @@ public class Client implements IUpdatable, IRenderable {
 			Screen.SCREEN_LOBBY.removeCountdownText();
 			break;
 		case 1:
-			if(!countdownTimer.isRunning()) {
-				countdownTimer.restart();
-				Screen.SCREEN_LOBBY.setCountdownText(String.valueOf(5));
-			}
+			countdownTimer.restart();
+			Screen.SCREEN_LOBBY.setCountdownText(String.valueOf(5));
 			break;
 		}
 	}

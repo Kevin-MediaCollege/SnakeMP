@@ -4,7 +4,7 @@ import com.snakybo.sengine2d.core.SEngine2D;
 import com.snakybo.sengine2d.rendering.Window;
 
 public class Main {
-	public static final String VERSION = "0.1 Beta";
+	public static final String VERSION = "0.69 Beta";
 	
 	private static SEngine2D engine;
 	private static Window window;

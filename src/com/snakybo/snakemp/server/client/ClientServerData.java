@@ -18,7 +18,10 @@ public class ClientServerData {
 	
 	private String name;
 	
+	private int direction;
 	private int port;
+	private int x;
+	private int y;
 	
 	private boolean isDoneLoading;
 	private boolean isConnected;
@@ -60,6 +63,18 @@ public class ClientServerData {
 		ServerLog.log(name + " is now " + (isReady ? "" : "not ") + "ready.");
 	}
 	
+	public void setX(int x) {
+		this.x = x;
+	}
+	
+	public void setY(int y) {
+		this.y = y;
+	}
+	
+	public void setDirection(int direction) {
+		this.direction = direction;
+	}
+	
 	public int getId() {
 		return id;
 	}
@@ -72,8 +87,20 @@ public class ClientServerData {
 		return color;
 	}
 	
+	public int getX() {
+		return x;
+	}
+	
+	public int getY() {
+		return y;
+	}
+	
 	public String getName() {
 		return name;
+	}
+	
+	public int getDirection() {
+		return direction;
 	}
 	
 	public int getPort() {

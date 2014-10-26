@@ -63,9 +63,15 @@ public class Screen implements IUpdatable, IRenderable {
 		return null;
 	}
 	
+	public void reset() {}
+	
 	protected void removeComponent(GUIComponent component) {
 		if(components.contains(component))
 			components.remove(component);
+	}
+	
+	protected void removeErrorText() {
+		removeComponent(errorText);
 	}
 	
 	protected GUIText addTitleText() {

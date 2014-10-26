@@ -1,7 +1,7 @@
 package com.snakybo.snakemp.client.network;
 
 import com.snakybo.sengine2d.utils.math.Vector3f;
-import com.snakybo.snakemp.common.data.ClientData;
+import com.snakybo.snakemp.client.player.ClientData;
 import com.snakybo.snakemp.common.data.Config;
 import com.snakybo.snakemp.common.screen.Screen;
 

@@ -29,6 +29,10 @@ public class ScreenError extends Screen {
 		}
 	}
 	
+	public void setErrorMessage(String error) {
+		newError = error;
+	}
+	
 	public void setErrorMessage(ENetworkMessages type) {
 		newError = "Server has rejected your connection: " + type;
 	}
