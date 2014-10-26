@@ -4,6 +4,7 @@ import com.snakybo.sengine2d.core.Input;
 import com.snakybo.sengine2d.core.Input.KeyCode;
 import com.snakybo.sengine2d.gui.GUIButton;
 import com.snakybo.sengine2d.gui.GUIText;
+import com.snakybo.sengine2d.gui.GUIButton.ButtonHandler;
 import com.snakybo.sengine2d.rendering.Window;
 import com.snakybo.sengine2d.utils.math.Vector2i;
 import com.snakybo.sengine2d.utils.math.Vector3f;
@@ -33,26 +34,29 @@ public class ScreenJoin extends Screen {
 		GUITextButton joinServerButton = new GUITextButton(
 				new Vector2i(Window.getWidth() - (GUITextButton.SIZE.x / 2) - 10, Window.getHeight() - 123),
 				GUIButton.LEFT,
-				() -> {
-					if(udpPortField.getValue().length() > 0 && tcpPortField.getValue().length() > 0 && ipField.getValue().length() > 0) {
-						int udpPortValue = Integer.parseInt(udpPortField.getValue());
-						int tcpPortValue = Integer.parseInt(tcpPortField.getValue());
-						
-						if(udpPortValue <= 0 || udpPortValue > 65535 || tcpPortValue <= 0 || tcpPortValue > 65535) {
-							setErrorText("UDP or TCP port is out of range (0-65535)", 450);
-							return;
-						}
-						
-						Config.serverAddress = ipField.getValue();
-						Config.udpPort = udpPortValue;
-						Config.tcpPort = tcpPortValue;
+				new ButtonHandler() {
+					@Override
+					public void onClick() {
+						if(udpPortField.getValue().length() > 0 && tcpPortField.getValue().length() > 0 && ipField.getValue().length() > 0) {
+							int udpPortValue = Integer.parseInt(udpPortField.getValue());
+							int tcpPortValue = Integer.parseInt(tcpPortField.getValue());
 							
-						ClientConnection.initialize(SnakeMP.getInstance().getClient());
-					} else {
-						if(ipField.getValue().length() <= 0) {
-							setErrorText("You have to enter an IP address", 450);
+							if(udpPortValue <= 0 || udpPortValue > 65535 || tcpPortValue <= 0 || tcpPortValue > 65535) {
+								setErrorText("UDP or TCP port is out of range (0-65535)", 450);
+								return;
+							}
+							
+							Config.serverAddress = ipField.getValue();
+							Config.udpPort = udpPortValue;
+							Config.tcpPort = tcpPortValue;
+								
+							ClientConnection.initialize(SnakeMP.getInstance().getClient());
 						} else {
-							setErrorText("Both the UDP and TCP port must have a value", 450);
+							if(ipField.getValue().length() <= 0) {
+								setErrorText("You have to enter an IP address", 450);
+							} else {
+								setErrorText("Both the UDP and TCP port must have a value", 450);
+							}
 						}
 					}
 				}
@@ -61,13 +65,13 @@ public class ScreenJoin extends Screen {
 		joinServerButton.setText(24, "JOIN");
 		
 		addText(PIXELMIX_FONT, 14, new Vector2i(Window.getWidth() / 2 - 75, 180), "Server IP", GUIText.LEFT);
-		ipField = new GUIInputField(PIXELMIX_FONT, 14, Window.getWidth() / 2 - 75, 200, 150, 30, ()->{});
+		ipField = new GUIInputField(PIXELMIX_FONT, 14, Window.getWidth() / 2 - 75, 200, 150, 30, null);
 		
 		addText(PIXELMIX_FONT, 14, new Vector2i(Window.getWidth() / 2 - 75, 260), "Server UDP Port", GUIText.LEFT);
-		udpPortField = new GUIInputField(PIXELMIX_FONT, 14, Window.getWidth() / 2 - 75, 280, 150, 30, ()->{});
+		udpPortField = new GUIInputField(PIXELMIX_FONT, 14, Window.getWidth() / 2 - 75, 280, 150, 30, null);
 		
 		addText(PIXELMIX_FONT, 14, new Vector2i(Window.getWidth() / 2 - 75, 340), "Server TCP Port", GUIText.LEFT);
-		tcpPortField = new GUIInputField(PIXELMIX_FONT, 14, Window.getWidth() / 2 - 75, 360, 150, 30, ()->{});
+		tcpPortField = new GUIInputField(PIXELMIX_FONT, 14, Window.getWidth() / 2 - 75, 360, 150, 30, null);
 		
 		ipField.setText(Config.serverAddress);
 		ipField.setCursorPos(99);

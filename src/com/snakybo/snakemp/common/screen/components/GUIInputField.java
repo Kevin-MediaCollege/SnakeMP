@@ -74,6 +74,8 @@ import static org.lwjgl.opengl.GL11.glEnable;
 
 import java.awt.Font;
 import java.awt.FontFormatException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -169,8 +171,11 @@ public class GUIInputField extends GUIComponent {
 		setAllowBit(BIT_SPECIALS, true);
 		setAllowBit(BIT_CONTROL, true);
 		
-		blinkerTimer = new Timer(650, (evt) -> {
-			showBlinker = !showBlinker;
+		blinkerTimer = new Timer(650, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showBlinker = !showBlinker;
+			}
 		});
 	}
 	
@@ -185,7 +190,9 @@ public class GUIInputField extends GUIComponent {
 			} else {
 				if(isActive) {
 					setIsActive(false);
-					handler.onFocusLost();
+					
+					if(handler != null)
+						handler.onFocusLost();
 				}
 			}
 		}

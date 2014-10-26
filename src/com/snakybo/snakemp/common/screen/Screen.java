@@ -9,6 +9,7 @@ import com.snakybo.sengine2d.component.IRenderable;
 import com.snakybo.sengine2d.component.IUpdatable;
 import com.snakybo.sengine2d.core.Input;
 import com.snakybo.sengine2d.gui.GUIButton;
+import com.snakybo.sengine2d.gui.GUIButton.ButtonHandler;
 import com.snakybo.sengine2d.gui.GUIComponent;
 import com.snakybo.sengine2d.gui.GUIText;
 import com.snakybo.sengine2d.rendering.Renderer;
@@ -102,11 +103,14 @@ public class Screen implements IUpdatable, IRenderable {
 		GUITextButton button = new GUITextButton(
 			new Vector2i(Window.getWidth() - (GUITextButton.SIZE.x / 2) - 10, Window.getHeight() - 62),
 			GUIButton.LEFT,
-			() -> {
-				SnakeMP.getInstance().stopServer();
+			new ButtonHandler() {
+				@Override
+				public void onClick() {
+					SnakeMP.getInstance().stopServer();
 					
-				ClientConnection.destroy();
-				Client.setActiveScreen(Screen.SCREEN_MAIN);
+					ClientConnection.destroy();
+					Client.setActiveScreen(Screen.SCREEN_MAIN);
+				}
 			}
 		);
 		

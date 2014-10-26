@@ -10,6 +10,7 @@ import com.snakybo.sengine2d.core.Input;
 import com.snakybo.sengine2d.core.Input.KeyCode;
 import com.snakybo.sengine2d.gui.GUIButton;
 import com.snakybo.sengine2d.gui.GUIText;
+import com.snakybo.sengine2d.gui.GUIButton.ButtonHandler;
 import com.snakybo.sengine2d.rendering.Renderer;
 import com.snakybo.sengine2d.rendering.Window;
 import com.snakybo.sengine2d.utils.Bounds;
@@ -20,6 +21,7 @@ import com.snakybo.snakemp.client.player.ClientData;
 import com.snakybo.snakemp.common.SnakeMP;
 import com.snakybo.snakemp.common.network.ENetworkMessages;
 import com.snakybo.snakemp.common.screen.components.GUIInputField;
+import com.snakybo.snakemp.common.screen.components.GUIInputField.InputFieldHandler;
 import com.snakybo.snakemp.common.screen.components.GUITextButton;
 
 
@@ -57,40 +59,48 @@ public class ScreenLobby extends Screen {
 		GUITextButton readyButton = new GUITextButton(
 				new Vector2i(Window.getWidth() - (GUITextButton.SIZE.x / 2) - 10, Window.getHeight() - 123),
 				GUIButton.LEFT,
-				() -> {
-					ClientData client = SnakeMP.getInstance().getClient().getPlayer();
-					
-					client.setIsReady(!client.isReady());
-					ClientConnection.sendUDP(ENetworkMessages.CLIENT_UPDATE_READY, 
-							String.valueOf(client.getId()),
-							(client.isReady() ? "1" : "0")
-						);
+				new ButtonHandler() {
+					@Override
+					public void onClick() {
+						ClientData client = SnakeMP.getInstance().getClient().getPlayer();
+						
+						client.setIsReady(!client.isReady());
+						ClientConnection.sendUDP(ENetworkMessages.CLIENT_UPDATE_READY, 
+								String.valueOf(client.getId()),
+								(client.isReady() ? "1" : "0")
+							);
+					}
 				}
 			);
 		
 		readyButton.setText(24, "READY");
 		
 		addText(PIXELMIX_FONT, 14, new Vector2i(Window.getWidth() / 2 - 245, Window.getHeight() - 60), "Red color", GUIText.LEFT);
-		redField = new GUIInputField(PIXELMIX_FONT, 14, Window.getWidth() / 2 - 245, Window.getHeight() - 40, 150, 30, () -> {
-			if(redField.getValue().length() <= 0)
-				redField.setText("0.3");
-			
-			Float redValue = Float.parseFloat(redField.getValue());
-			
-			if(redValue < 0.3f) {
-				redValue = 0.3f;
-				redField.setText("0.3");
-			} else if(redValue > 0.7f) {
-				redValue = 0.7f;
-				redField.setText("0.7");
-			}
-			
-			ClientData data = SnakeMP.getInstance().getClient().getPlayer();
-			Vector3f oldColor = data.getColor();
-			
-			data.setColor(new Vector3f(redValue, oldColor.y, oldColor.z));
-			ClientConnection.sendUDP(ENetworkMessages.CLIENT_UPDATE_COLOR, String.valueOf(data.getId()), String.valueOf(data.getColor().x), String.valueOf(data.getColor().y), String.valueOf(data.getColor().z));
-		});
+		redField = new GUIInputField(PIXELMIX_FONT, 14, Window.getWidth() / 2 - 245, Window.getHeight() - 40, 150, 30,
+				new InputFieldHandler() {
+					@Override
+					public void onFocusLost() {
+						if(redField.getValue().length() <= 0)
+							redField.setText("0.3");
+						
+						Float redValue = Float.parseFloat(redField.getValue());
+						
+						if(redValue < 0.3f) {
+							redValue = 0.3f;
+							redField.setText("0.3");
+						} else if(redValue > 0.7f) {
+							redValue = 0.7f;
+							redField.setText("0.7");
+						}
+						
+						ClientData data = SnakeMP.getInstance().getClient().getPlayer();
+						Vector3f oldColor = data.getColor();
+						
+						data.setColor(new Vector3f(redValue, oldColor.y, oldColor.z));
+						ClientConnection.sendUDP(ENetworkMessages.CLIENT_UPDATE_COLOR, String.valueOf(data.getId()), String.valueOf(data.getColor().x), String.valueOf(data.getColor().y), String.valueOf(data.getColor().z));
+					}
+				}
+			);
 		
 		redField.setBorder(new Vector3f(1, 0, 0));
 		redField.setMaxCharacters(10);
@@ -100,26 +110,31 @@ public class ScreenLobby extends Screen {
 		redField.setAllowCustom(KeyCode.PERIOD, true);
 		
 		addText(PIXELMIX_FONT, 14, new Vector2i(Window.getWidth() / 2 - 75, Window.getHeight() - 60), "Green color", GUIText.LEFT);
-		greenField = new GUIInputField(PIXELMIX_FONT, 14, Window.getWidth() / 2 - 75, Window.getHeight() - 40, 150, 30, () -> {
-			if(greenField.getValue().length() <= 0)
-				greenField.setText("0.3");
-			
-			Float greenValue = Float.parseFloat(greenField.getValue());
-			
-			if(greenValue < 0.3f) {
-				greenValue = 0.3f;
-				greenField.setText("0.3");
-			} else if(greenValue > 0.7f) {
-				greenValue = 0.7f;
-				greenField.setText("0.7");
-			}
-			
-			ClientData data = SnakeMP.getInstance().getClient().getPlayer();
-			Vector3f oldColor = data.getColor();
-			
-			data.setColor(new Vector3f(oldColor.x, greenValue, oldColor.z));
-			ClientConnection.sendUDP(ENetworkMessages.CLIENT_UPDATE_COLOR, String.valueOf(data.getId()), String.valueOf(data.getColor().x), String.valueOf(data.getColor().y), String.valueOf(data.getColor().z));
-		});
+		greenField = new GUIInputField(PIXELMIX_FONT, 14, Window.getWidth() / 2 - 75, Window.getHeight() - 40, 150, 30,
+				new InputFieldHandler() {
+					@Override
+					public void onFocusLost() {
+						if(greenField.getValue().length() <= 0)
+							greenField.setText("0.3");
+						
+						Float greenValue = Float.parseFloat(greenField.getValue());
+						
+						if(greenValue < 0.3f) {
+							greenValue = 0.3f;
+							greenField.setText("0.3");
+						} else if(greenValue > 0.7f) {
+							greenValue = 0.7f;
+							greenField.setText("0.7");
+						}
+						
+						ClientData data = SnakeMP.getInstance().getClient().getPlayer();
+						Vector3f oldColor = data.getColor();
+						
+						data.setColor(new Vector3f(oldColor.x, greenValue, oldColor.z));
+						ClientConnection.sendUDP(ENetworkMessages.CLIENT_UPDATE_COLOR, String.valueOf(data.getId()), String.valueOf(data.getColor().x), String.valueOf(data.getColor().y), String.valueOf(data.getColor().z));
+					}
+				}
+			);
 		
 		greenField.setBorder(new Vector3f(0, 1, 0));
 		greenField.setMaxCharacters(10);
@@ -129,26 +144,31 @@ public class ScreenLobby extends Screen {
 		greenField.setAllowCustom(KeyCode.PERIOD, true);
 		
 		addText(PIXELMIX_FONT, 14, new Vector2i(Window.getWidth() / 2 + 95, Window.getHeight() - 60), "Blue color", GUIText.LEFT);
-		blueField = new GUIInputField(PIXELMIX_FONT, 14, Window.getWidth() / 2 + 95, Window.getHeight() - 40, 150, 30, () -> {
-			if(blueField.getValue().length() <= 0)
-				blueField.setText("0.3");
-			
-			Float blueValue = Float.parseFloat(blueField.getValue());
-			
-			if(blueValue < 0.3f) {
-				blueValue = 0.3f;
-				blueField.setText("0.3");
-			} else if(blueValue > 0.7f) {
-				blueValue = 0.7f;
-				blueField.setText("0.7");
-			}
-			
-			ClientData data = SnakeMP.getInstance().getClient().getPlayer();
-			Vector3f oldColor = data.getColor();
-			
-			data.setColor(new Vector3f(oldColor.x, oldColor.y, blueValue));
-			ClientConnection.sendUDP(ENetworkMessages.CLIENT_UPDATE_COLOR, String.valueOf(data.getId()), String.valueOf(data.getColor().x), String.valueOf(data.getColor().y), String.valueOf(data.getColor().z));
-		});
+		blueField = new GUIInputField(PIXELMIX_FONT, 14, Window.getWidth() / 2 + 95, Window.getHeight() - 40, 150, 30,
+				new InputFieldHandler() {
+					@Override
+					public void onFocusLost() {
+						if(blueField.getValue().length() <= 0)
+							blueField.setText("0.3");
+						
+						Float blueValue = Float.parseFloat(blueField.getValue());
+						
+						if(blueValue < 0.3f) {
+							blueValue = 0.3f;
+							blueField.setText("0.3");
+						} else if(blueValue > 0.7f) {
+							blueValue = 0.7f;
+							blueField.setText("0.7");
+						}
+						
+						ClientData data = SnakeMP.getInstance().getClient().getPlayer();
+						Vector3f oldColor = data.getColor();
+						
+						data.setColor(new Vector3f(oldColor.x, oldColor.y, blueValue));
+						ClientConnection.sendUDP(ENetworkMessages.CLIENT_UPDATE_COLOR, String.valueOf(data.getId()), String.valueOf(data.getColor().x), String.valueOf(data.getColor().y), String.valueOf(data.getColor().z));
+					}
+				}
+			);
 		
 		blueField.setBorder(new Vector3f(0, 0, 1));
 		blueField.setMaxCharacters(10);

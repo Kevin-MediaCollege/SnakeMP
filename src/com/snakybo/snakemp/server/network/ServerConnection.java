@@ -5,6 +5,7 @@ import java.net.InetAddress;
 import java.net.SocketException;
 
 import com.snakybo.sengine2d.network.UDPServer;
+import com.snakybo.sengine2d.network.UDPServer.ServerMessageHandler;
 import com.snakybo.snakemp.client.Client;
 import com.snakybo.snakemp.common.SnakeMP;
 import com.snakybo.snakemp.common.data.Config;
@@ -30,7 +31,7 @@ public class ServerConnection {
 		ServerLog.log("Starting server");
 		
 		try {
-			udpServer = new UDPServer(Config.udpPort, (m, a, p)->onUDPMessageReceived(m, a, p));
+			udpServer = new UDPServer(Config.udpPort, new UDPMessageReceived());
 		} catch(SocketException e) {
 			if(udpServer != null) {
 				if(udpServer.isOpen())
@@ -86,45 +87,48 @@ public class ServerConnection {
 		}
 	}
 	
-	private static void onUDPMessageReceived(String message, InetAddress address, int port) {
-		final String[] parts = message.split("#");
-		final ENetworkMessages id = ENetworkMessages.toId(parts[0]);
-		
-		if(id == null)
-			return;
-		
-		switch(id) {
-		case CLIENT_REQUEST_JOIN:
-			server.getClientManager().onClientRequestJoin(parts, address, port);
-			break;
-		case CLIENT_LEAVE:
-			server.getClientManager().onClientLeave(parts[1]);
-			break;
-		case CLIENT_UPDATE_READY:
-			server.getClientManager().onClientReadyChange(parts[1], parts[2]);
-			break;
-		case CLIENT_UPDATE_COLOR:
-			server.getClientManager().onClientColorChange(parts[1], parts[2], parts[3], parts[4]);
-			break;
-		case CLIENT_LOADED:
-			server.getClientManager().onClientLoaded(parts[1]);
-			break;
-		case CLIENT_UPDATE_DIRECTION:
-			server.getClientManager().getClient((int)Float.parseFloat(parts[1])).setDirection((int)Float.parseFloat(parts[2]));
-			sendUDP(ENetworkMessages.CLIENT_UPDATE_DIRECTION, parts[1], parts[2]);
-			break;
-		case CLIENT_DIED:
-			server.getClientManager().getClient((int)Float.parseFloat(parts[1])).onDead();
-			break;
-		case CLIENT_GROWN:
-			sendUDP(ENetworkMessages.CLIENT_GROWN, parts[1]);
-			break;
-		case CLIENT_STOLE_PARTS:
-			sendUDP(ENetworkMessages.CLIENT_STOLE_PARTS, parts[1], parts[2]);
-			break;
-		default:
-			System.err.println("[UDP] Server received an invalid message ID: " + id);
-			break;
+	private static class UDPMessageReceived implements ServerMessageHandler {
+		@Override
+		public void onMessageReceived(String message, InetAddress address, int port) {
+			final String[] parts = message.split("#");
+			final ENetworkMessages id = ENetworkMessages.toId(parts[0]);
+			
+			if(id == null)
+				return;
+			
+			switch(id) {
+			case CLIENT_REQUEST_JOIN:
+				server.getClientManager().onClientRequestJoin(parts, address, port);
+				break;
+			case CLIENT_LEAVE:
+				server.getClientManager().onClientLeave(parts[1]);
+				break;
+			case CLIENT_UPDATE_READY:
+				server.getClientManager().onClientReadyChange(parts[1], parts[2]);
+				break;
+			case CLIENT_UPDATE_COLOR:
+				server.getClientManager().onClientColorChange(parts[1], parts[2], parts[3], parts[4]);
+				break;
+			case CLIENT_LOADED:
+				server.getClientManager().onClientLoaded(parts[1]);
+				break;
+			case CLIENT_UPDATE_DIRECTION:
+				server.getClientManager().getClient((int)Float.parseFloat(parts[1])).setDirection((int)Float.parseFloat(parts[2]));
+				sendUDP(ENetworkMessages.CLIENT_UPDATE_DIRECTION, parts[1], parts[2]);
+				break;
+			case CLIENT_DIED:
+				server.getClientManager().getClient((int)Float.parseFloat(parts[1])).onDead();
+				break;
+			case CLIENT_GROWN:
+				sendUDP(ENetworkMessages.CLIENT_GROWN, parts[1]);
+				break;
+			case CLIENT_STOLE_PARTS:
+				sendUDP(ENetworkMessages.CLIENT_STOLE_PARTS, parts[1], parts[2]);
+				break;
+			default:
+				System.err.println("[UDP] Server received an invalid message ID: " + id);
+				break;
+			}
 		}
 	}
 }

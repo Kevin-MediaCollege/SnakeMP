@@ -1,5 +1,8 @@
 package com.snakybo.snakemp.client;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.Timer;
 
 import com.snakybo.sengine2d.component.IRenderable;
@@ -29,10 +32,13 @@ public class Client implements IUpdatable, IRenderable {
 	public Client() {
 		clientList = new ClientList();
 		
-		countdownTimer = new Timer(1000, (evt) -> {			
-			countdownIterations++;
-			
-			Screen.SCREEN_LOBBY.setCountdownText(String.valueOf(5 - countdownIterations));
+		countdownTimer = new Timer(1000, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				countdownIterations++;
+				
+				Screen.SCREEN_LOBBY.setCountdownText(String.valueOf(5 - countdownIterations));
+			}
 		});
 		
 		setActiveScreen(Screen.SCREEN_MAIN);

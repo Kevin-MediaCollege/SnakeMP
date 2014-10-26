@@ -2,6 +2,7 @@ package com.snakybo.snakemp.common.screen;
 
 import com.snakybo.sengine2d.gui.GUIButton;
 import com.snakybo.sengine2d.gui.GUIText;
+import com.snakybo.sengine2d.gui.GUIButton.ButtonHandler;
 import com.snakybo.sengine2d.rendering.Window;
 import com.snakybo.sengine2d.utils.math.Vector2i;
 import com.snakybo.sengine2d.utils.math.Vector3f;
@@ -24,13 +25,16 @@ public class ScreenMain extends Screen {
 		GUITextButton hostButton = new GUITextButton(
         		new Vector2i((int)(Window.getWidth() / 2), 250),
                 GUIButton.CENTER,
-                () -> {
-                	if(playerNameField.getValue().length() > 0) {
-                		Config.playerName = playerNameField.getValue();
-                		
-						Client.setActiveScreen(Screen.SCREEN_HOST);
-					} else {
-						setErrorText("You must have a player name", 500);
+                new ButtonHandler() {
+					@Override
+					public void onClick() {
+	                	if(playerNameField.getValue().length() > 0) {
+	                		Config.playerName = playerNameField.getValue();
+	                		
+							Client.setActiveScreen(Screen.SCREEN_HOST);
+						} else {
+							setErrorText("You must have a player name", 500);
+						}
 					}
                 }
             );
@@ -39,13 +43,16 @@ public class ScreenMain extends Screen {
 		GUITextButton joinButton = new GUITextButton(
         		new Vector2i((int)(Window.getWidth() / 2), 325),
                 GUIButton.CENTER,
-				() -> {
-					if(playerNameField.getValue().length() > 0) {
-						Config.playerName = playerNameField.getValue();
-						
-						Client.setActiveScreen(Screen.SCREEN_JOIN);
-					} else {
-						setErrorText("You must have a player name", 500);
+                new ButtonHandler() {
+					@Override
+					public void onClick() {
+						if(playerNameField.getValue().length() > 0) {
+							Config.playerName = playerNameField.getValue();
+							
+							Client.setActiveScreen(Screen.SCREEN_JOIN);
+						} else {
+							setErrorText("You must have a player name", 500);
+						}
 					}
 				}
             );
@@ -54,8 +61,11 @@ public class ScreenMain extends Screen {
 		GUITextButton quitButton = new GUITextButton(
 				new Vector2i((int)(Window.getWidth() / 2), 400),
 				GUIButton.CENTER,
-				() -> {
-					Main.stop();
+				new ButtonHandler() {
+					@Override
+					public void onClick() {
+						Main.stop();
+					}
 				}
 			);
 		
@@ -64,7 +74,7 @@ public class ScreenMain extends Screen {
 		quitButton.setText(24, "QUIT");
 		
 		addText(PIXELMIX_FONT, 14, new Vector2i(Window.getWidth() / 2 - 150, 180), "Player Name", GUIText.LEFT);
-		playerNameField = new GUIInputField(PIXELMIX_FONT, 14, Window.getWidth() / 2 - 150, 200, 300, 30, ()->{});
+		playerNameField = new GUIInputField(PIXELMIX_FONT, 14, Window.getWidth() / 2 - 150, 200, 300, 30, null);
 		
 		playerNameField.setText(Config.playerName);
 		playerNameField.setCursorPos(99);
