@@ -5,7 +5,9 @@ import java.util.List;
 
 import com.snakybo.sengine2d.utils.math.Vector2i;
 import com.snakybo.sengine2d.utils.math.Vector3f;
+import com.snakybo.snakemp.client.network.ClientConnection;
 import com.snakybo.snakemp.common.data.Config;
+import com.snakybo.snakemp.common.network.ENetworkMessages;
 import com.snakybo.snakemp.common.util.Utils;
 
 public class ClientData {
@@ -40,9 +42,8 @@ public class ClientData {
 	
 	public void spawn(int x, int y, int direction) {
 		parts.clear();
-		System.out.println(x + " " + y);
 		
-		addPart(x, y, direction);
+		addPart(x, y, direction, true);
 		
 		for(int i = 1; i < getLength(); i++) {
 			int pX = x;
@@ -63,12 +64,47 @@ public class ClientData {
 				break;
 			}
 			
-			addPart(pX, pY, direction);
+			addPart(pX, pY, direction, false);
 		}
 	}
 	
-	public void addPart(int x, int y, int direction) {
-		parts.add(new SnakePart(x, y, direction));
+	public void steal(int from) {
+		for(int i = from; i < parts.size(); i++) 
+			parts.remove(i);
+		
+		if(parts.size() <= 3) {
+			System.err.println("REASON DIED: parts <= 3");
+			ClientConnection.sendUDP(ENetworkMessages.CLIENT_DIED, getId());
+		}
+	}
+	
+	public void addPart(int x, int y, int direction, boolean isHead) {
+		parts.add(new SnakePart(x, y, direction, isHead));
+	}
+	
+	public void addLastPart() {
+		SnakePart last = parts.get(parts.size() - 1);
+		
+		int x = last.getX();
+		int y = last.getY();
+		int direction = last.getDirection();
+		
+		switch(direction) {
+		case 0:
+			y -= 1;
+			break;
+		case 1:
+			x =- 1;
+			break;
+		case 2:
+			y += 1;
+			break;
+		case 3:
+			x += 1;
+			break;
+		}
+		
+		addPart(x, y, direction, false);
 	}
 	
 	public void update(int x, int y, int direction) {

@@ -8,7 +8,7 @@ import com.snakybo.sengine2d.rendering.Window;
 import com.snakybo.sengine2d.utils.math.Vector2i;
 import com.snakybo.sengine2d.utils.math.Vector3f;
 import com.snakybo.snakemp.client.network.ClientConnection;
-import com.snakybo.snakemp.common.SnakeMultiplayer;
+import com.snakybo.snakemp.common.SnakeMP;
 import com.snakybo.snakemp.common.data.Config;
 import com.snakybo.snakemp.common.screen.components.GUIInputField;
 import com.snakybo.snakemp.common.screen.components.GUITextButton;
@@ -47,8 +47,8 @@ public class ScreenHost extends Screen {
 						Config.udpPort = udpPortValue;
 						Config.tcpPort = tcpPortValue;
 							
-						SnakeMultiplayer.getInstance().startServer();
-						ClientConnection.initialize(SnakeMultiplayer.getInstance().getClient());
+						SnakeMP.getInstance().startServer();
+						ClientConnection.initialize(SnakeMP.getInstance().getClient());
 					} else {
 						removeComponent(errorText);
 						errorText = addText(PIXELMIX_FONT, 16, new Vector2i(Window.getWidth() / 2, 350), "Both the UDP and TCP port must have a value", GUIText.CENTER);

@@ -10,16 +10,27 @@ import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glTranslatef;
 import static org.lwjgl.opengl.GL11.glVertex2f;
 
+import com.snakybo.sengine2d.core.Input;
 import com.snakybo.sengine2d.rendering.Renderer;
 import com.snakybo.sengine2d.utils.Bounds;
 import com.snakybo.snakemp.client.player.ClientData;
 import com.snakybo.snakemp.client.player.SnakePart;
-import com.snakybo.snakemp.common.SnakeMultiplayer;
+import com.snakybo.snakemp.common.SnakeMP;
 import com.snakybo.snakemp.common.data.Config;
 
 public class ScreenGame extends Screen {
+	private ClientData[] clients;
+	
 	public ScreenGame() {
 		super(false);
+	}
+	
+	@Override
+	public void update(Input input, float delta) {
+		super.update(input, delta);
+		
+		if(clients == null)
+			clients = SnakeMP.getInstance().getClient().getClientList().getClients();
 	}
 	
 	@Override
@@ -54,55 +65,20 @@ public class ScreenGame extends Screen {
 			} glPopMatrix();
 		}
 		
-		ClientData[] clients = SnakeMultiplayer.getInstance().getClient().getClientList().getClients();
-		
 		for(ClientData client : clients) {
 			if(client != null) {
-				for(SnakePart part : client.getParts()) {
-					Bounds bounds = new Bounds(
-								part.getX() * Config.GRID_SIZE,
-								part.getX() * Config.GRID_SIZE + Config.GRID_SIZE,
-								part.getY() * Config.GRID_SIZE,
-								part.getY() * Config.GRID_SIZE + Config.GRID_SIZE
-							);
-					
-					renderer.drawQuad(bounds, client.getColor());
-					
-					//System.out.println(part.getX() + " " + part.getY());
+				if(client.isAlive()) {				
+					for(SnakePart part : client.getParts()) {
+						Bounds bounds = new Bounds(
+									part.getX() * Config.GRID_SIZE,
+									part.getX() * Config.GRID_SIZE + Config.GRID_SIZE,
+									part.getY() * Config.GRID_SIZE,
+									part.getY() * Config.GRID_SIZE + Config.GRID_SIZE
+								);
+						
+						renderer.drawQuad(bounds, client.getColor());
+					}
 				}
-				
-				/*Bounds headPos = new Bounds(
-							(client.getPosition().x) * Config.GRID_SIZE,
-							(client.getPosition().x * Config.GRID_SIZE) + Config.GRID_SIZE,
-							(client.getPosition().y) * Config.GRID_SIZE,
-							(client.getPosition().y * Config.GRID_SIZE) + Config.GRID_SIZE
-						);
-				
-				renderer.drawQuad(headPos, client.getColor());
-				
-				System.out.println(headPos.left + " " + headPos.right + " " + headPos.top + " " + headPos.bottom);
-				*/
-				/*Bounds bounds = new Bounds(
-					client.getPosition().x,
-					client.getPosition().x + Config.GRID_SIZE,
-					client.getPosition().y,
-					client.getPosition().y + Config.GRID_SIZE
-				);
-				
-				renderer.drawQuad(bounds, client.getColor());
-				
-				for(SnakePart part : client.getParts()) {
-//					System.out.println(part.getX() + " " + part.getY());
-					
-					Bounds partBounds = new Bounds(
-						bounds.left - (part.getX() * Config.GRID_SIZE),
-						bounds.right - (part.getX() * Config.GRID_SIZE),
-						bounds.top - (part.getY() * Config.GRID_SIZE),
-						bounds.bottom -= (part.getY() * Config.GRID_SIZE)
-					);
-					
-					renderer.drawQuad(partBounds, client.getColor());
-				}*/
 			}
 		}
 	}

@@ -8,13 +8,15 @@ public class SnakePart {
 	private int oldY;
 	
 	private int direction;
-	
 	private int oldDirection;
 	
-	public SnakePart(int x, int y, int direction) {
+	private boolean isHead;
+	
+	public SnakePart(int x, int y, int direction, boolean isHead) {
 		this.x = x;
 		this.y = y;
 		this.direction = direction;
+		this.isHead = isHead;
 	}
 	
 	public void setX(int x) {
@@ -57,5 +59,9 @@ public class SnakePart {
 	
 	public int getOldDirection() {
 		return oldDirection;
+	}
+	
+	public boolean isHead() {
+		return isHead;
 	}
 }

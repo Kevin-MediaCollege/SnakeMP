@@ -8,7 +8,7 @@ import com.snakybo.sengine2d.rendering.Window;
 import com.snakybo.sengine2d.utils.math.Vector2i;
 import com.snakybo.sengine2d.utils.math.Vector3f;
 import com.snakybo.snakemp.client.network.ClientConnection;
-import com.snakybo.snakemp.common.SnakeMultiplayer;
+import com.snakybo.snakemp.common.SnakeMP;
 import com.snakybo.snakemp.common.data.Config;
 import com.snakybo.snakemp.common.screen.components.GUIInputField;
 import com.snakybo.snakemp.common.screen.components.GUITextButton;
@@ -47,7 +47,7 @@ public class ScreenJoin extends Screen {
 						Config.udpPort = udpPortValue;
 						Config.tcpPort = tcpPortValue;
 							
-						ClientConnection.initialize(SnakeMultiplayer.getInstance().getClient());
+						ClientConnection.initialize(SnakeMP.getInstance().getClient());
 					} else {
 						if(ipField.getValue().length() <= 0) {
 							setErrorText("You have to enter an IP address", 450);

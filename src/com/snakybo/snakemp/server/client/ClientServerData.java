@@ -3,7 +3,9 @@ package com.snakybo.snakemp.server.client;
 import java.net.InetAddress;
 
 import com.snakybo.sengine2d.utils.math.Vector3f;
+import com.snakybo.snakemp.common.SnakeMP;
 import com.snakybo.snakemp.common.network.ENetworkMessages;
+import com.snakybo.snakemp.server.Server;
 import com.snakybo.snakemp.server.ServerLog;
 import com.snakybo.snakemp.server.network.ServerConnection;
 
@@ -25,6 +27,7 @@ public class ClientServerData {
 	
 	private boolean isDoneLoading;
 	private boolean isConnected;
+	private boolean isAlive;
 	private boolean isReady;
 	
 	public ClientServerData(int id, String name, InetAddress address, int port) {
@@ -36,6 +39,7 @@ public class ClientServerData {
 		
 		isDoneLoading = false;
 		isConnected = true;
+		isAlive = true;
 		isReady = false;
 	}
 	
@@ -61,6 +65,36 @@ public class ClientServerData {
 		
 		ServerConnection.sendUDP(ENetworkMessages.CLIENT_UPDATE_READY, id, (isReady ? 1 : 0));
 		ServerLog.log(name + " is now " + (isReady ? "" : "not ") + "ready.");
+	}
+	
+	public void onDead() {
+		if(!isAlive)
+			return;
+		
+		this.isAlive = false;
+		
+		ServerConnection.sendUDP(ENetworkMessages.CLIENT_DIED, id);
+		ServerLog.log(name + " died");
+		
+		Server server = SnakeMP.getInstance().getServer();
+		
+		ClientServerData lastOneAlive = null;
+		
+		for(ClientServerData client : server.getClientManager().getClients()) {
+			if(client != null) {
+				if(client.isAlive()) {
+					if(lastOneAlive == null) { 
+						lastOneAlive = client;
+					} else {
+						lastOneAlive = null;
+						break;
+					}
+				}
+			}
+		}
+		
+		if(lastOneAlive != null)
+			server.getServerWorld().endGame(lastOneAlive.getId());
 	}
 	
 	public void setX(int x) {
@@ -113,6 +147,10 @@ public class ClientServerData {
 	
 	public boolean isConnected() {
 		return isConnected;
+	}
+	
+	public boolean isAlive() {
+		return isAlive;
 	}
 	
 	public boolean isReady() {

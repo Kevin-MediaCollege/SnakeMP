@@ -17,7 +17,7 @@ import com.snakybo.sengine2d.utils.math.Vector2i;
 import com.snakybo.snakemp.client.Client;
 import com.snakybo.snakemp.client.network.ClientConnection;
 import com.snakybo.snakemp.common.Main;
-import com.snakybo.snakemp.common.SnakeMultiplayer;
+import com.snakybo.snakemp.common.SnakeMP;
 import com.snakybo.snakemp.common.screen.components.GUITextButton;
 
 public class Screen implements IUpdatable, IRenderable {
@@ -103,7 +103,7 @@ public class Screen implements IUpdatable, IRenderable {
 			new Vector2i(Window.getWidth() - (GUITextButton.SIZE.x / 2) - 10, Window.getHeight() - 62),
 			GUIButton.LEFT,
 			() -> {
-				SnakeMultiplayer.getInstance().stopServer();
+				SnakeMP.getInstance().stopServer();
 					
 				ClientConnection.destroy();
 				Client.setActiveScreen(Screen.SCREEN_MAIN);

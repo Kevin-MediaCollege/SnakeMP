@@ -10,7 +10,8 @@ import javax.swing.Timer;
 import com.snakybo.sengine2d.network.UDPClient;
 import com.snakybo.sengine2d.utils.math.Vector3f;
 import com.snakybo.snakemp.client.Client;
-import com.snakybo.snakemp.common.SnakeMultiplayer;
+import com.snakybo.snakemp.client.player.ClientData;
+import com.snakybo.snakemp.common.SnakeMP;
 import com.snakybo.snakemp.common.data.Config;
 import com.snakybo.snakemp.common.network.ENetworkMessages;
 import com.snakybo.snakemp.common.screen.Screen;
@@ -128,13 +129,27 @@ public class ClientConnection {
 			client.getClientList().getClientWithId((int)Float.parseFloat(parts[1])).spawn((int)Float.parseFloat(parts[2]), (int)Float.parseFloat(parts[3]), (int)Float.parseFloat(parts[4]));
 			break;
 		case SERVER_START_GAME:
-			SnakeMultiplayer.getInstance().getClient().startGame();
+			SnakeMP.getInstance().getClient().startGame();
 			break;
 		case CIENT_UPDATE:
 			client.getClientList().getClientWithId((int)Float.parseFloat(parts[1])).update((int)Float.parseFloat(parts[2]), (int)Float.parseFloat(parts[3]), (int)Float.parseFloat(parts[4]));
 			break;
 		case CLIENT_UPDATE_DIRECTION:
 			client.getClientList().getClientWithId((int)Float.parseFloat(parts[1])).getPart(0).setDirection((int)Float.parseFloat(parts[2]));
+			break;
+		case CLIENT_DIED:
+			client.getClientList().getClientWithId((int)Float.parseFloat(parts[1])).setIsAlive(false);
+			break;
+		case CLIENT_GROWN:
+			client.getClientList().getClientWithId((int)Float.parseFloat(parts[1])).addLastPart();
+			break;
+		case SERVER_END:
+			client.endGame((int)Float.parseFloat(parts[1]));
+			break;
+		case CLIENT_STOLE_PARTS:
+			ClientData target = client.getClientList().getClientWithId((int)Float.parseFloat(parts[1]));
+			int from = (int)Float.parseFloat(parts[2]);
+			target.steal(from);
 			break;
 		default:
 			System.err.println("[UDP] Client received an invalid message ID: " + id);

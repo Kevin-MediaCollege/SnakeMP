@@ -8,8 +8,8 @@ import com.snakybo.snakemp.client.Client;
 import com.snakybo.snakemp.common.data.Textures;
 import com.snakybo.snakemp.server.Server;
 
-public class SnakeMultiplayer implements Game {
-	private static SnakeMultiplayer instance;
+public class SnakeMP implements Game {
+	private static SnakeMP instance;
 	
 	private Server server;
 	private Client client;
@@ -69,7 +69,7 @@ public class SnakeMultiplayer implements Game {
 		return server;
 	}
 	
-	public static SnakeMultiplayer getInstance() {
+	public static SnakeMP getInstance() {
 		return instance;
 	}
 }

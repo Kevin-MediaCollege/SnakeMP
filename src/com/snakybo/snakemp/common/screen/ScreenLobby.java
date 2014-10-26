@@ -17,7 +17,7 @@ import com.snakybo.sengine2d.utils.math.Vector2i;
 import com.snakybo.sengine2d.utils.math.Vector3f;
 import com.snakybo.snakemp.client.network.ClientConnection;
 import com.snakybo.snakemp.client.player.ClientData;
-import com.snakybo.snakemp.common.SnakeMultiplayer;
+import com.snakybo.snakemp.common.SnakeMP;
 import com.snakybo.snakemp.common.network.ENetworkMessages;
 import com.snakybo.snakemp.common.screen.components.GUIInputField;
 import com.snakybo.snakemp.common.screen.components.GUITextButton;
@@ -58,7 +58,7 @@ public class ScreenLobby extends Screen {
 				new Vector2i(Window.getWidth() - (GUITextButton.SIZE.x / 2) - 10, Window.getHeight() - 123),
 				GUIButton.LEFT,
 				() -> {
-					ClientData client = SnakeMultiplayer.getInstance().getClient().getPlayer();
+					ClientData client = SnakeMP.getInstance().getClient().getPlayer();
 					
 					client.setIsReady(!client.isReady());
 					ClientConnection.sendUDP(ENetworkMessages.CLIENT_UPDATE_READY, 
@@ -85,7 +85,7 @@ public class ScreenLobby extends Screen {
 				redField.setText("0.7");
 			}
 			
-			ClientData data = SnakeMultiplayer.getInstance().getClient().getPlayer();
+			ClientData data = SnakeMP.getInstance().getClient().getPlayer();
 			Vector3f oldColor = data.getColor();
 			
 			data.setColor(new Vector3f(redValue, oldColor.y, oldColor.z));
@@ -114,7 +114,7 @@ public class ScreenLobby extends Screen {
 				greenField.setText("0.7");
 			}
 			
-			ClientData data = SnakeMultiplayer.getInstance().getClient().getPlayer();
+			ClientData data = SnakeMP.getInstance().getClient().getPlayer();
 			Vector3f oldColor = data.getColor();
 			
 			data.setColor(new Vector3f(oldColor.x, greenValue, oldColor.z));
@@ -143,7 +143,7 @@ public class ScreenLobby extends Screen {
 				blueField.setText("0.7");
 			}
 			
-			ClientData data = SnakeMultiplayer.getInstance().getClient().getPlayer();
+			ClientData data = SnakeMP.getInstance().getClient().getPlayer();
 			Vector3f oldColor = data.getColor();
 			
 			data.setColor(new Vector3f(oldColor.x, oldColor.y, blueValue));
@@ -177,13 +177,13 @@ public class ScreenLobby extends Screen {
 		}
 		
 		if(!redField.isActive())
-			redField.setText(String.valueOf(SnakeMultiplayer.getInstance().getClient().getPlayer().getColor().x));
+			redField.setText(String.valueOf(SnakeMP.getInstance().getClient().getPlayer().getColor().x));
 		
 		if(!greenField.isActive())
-			greenField.setText(String.valueOf(SnakeMultiplayer.getInstance().getClient().getPlayer().getColor().y));
+			greenField.setText(String.valueOf(SnakeMP.getInstance().getClient().getPlayer().getColor().y));
 		
 		if(!blueField.isActive())
-			blueField.setText(String.valueOf(SnakeMultiplayer.getInstance().getClient().getPlayer().getColor().z));
+			blueField.setText(String.valueOf(SnakeMP.getInstance().getClient().getPlayer().getColor().z));
 		
 		if(clientsToAdd.size() > 0) {
 			for(int i = 0; i < clientsToAdd.size(); i++) {

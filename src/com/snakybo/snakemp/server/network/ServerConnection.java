@@ -6,7 +6,7 @@ import java.net.SocketException;
 
 import com.snakybo.sengine2d.network.UDPServer;
 import com.snakybo.snakemp.client.Client;
-import com.snakybo.snakemp.common.SnakeMultiplayer;
+import com.snakybo.snakemp.common.SnakeMP;
 import com.snakybo.snakemp.common.data.Config;
 import com.snakybo.snakemp.common.network.ENetworkMessages;
 import com.snakybo.snakemp.common.screen.Screen;
@@ -39,7 +39,7 @@ public class ServerConnection {
 				udpServer = null;
 			}
 			
-			SnakeMultiplayer.getInstance().getClient().destroy();
+			SnakeMP.getInstance().getClient().destroy();
 			
 			Screen.SCREEN_ERROR.setErrorMessage("Unable to create server: " + e.getLocalizedMessage());
 			Client.setActiveScreen(Screen.SCREEN_ERROR);
@@ -112,6 +112,15 @@ public class ServerConnection {
 		case CLIENT_UPDATE_DIRECTION:
 			server.getClientManager().getClient((int)Float.parseFloat(parts[1])).setDirection((int)Float.parseFloat(parts[2]));
 			sendUDP(ENetworkMessages.CLIENT_UPDATE_DIRECTION, parts[1], parts[2]);
+			break;
+		case CLIENT_DIED:
+			server.getClientManager().getClient((int)Float.parseFloat(parts[1])).onDead();
+			break;
+		case CLIENT_GROWN:
+			sendUDP(ENetworkMessages.CLIENT_GROWN, parts[1]);
+			break;
+		case CLIENT_STOLE_PARTS:
+			sendUDP(ENetworkMessages.CLIENT_STOLE_PARTS, parts[1], parts[2]);
 			break;
 		default:
 			System.err.println("[UDP] Server received an invalid message ID: " + id);

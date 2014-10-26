@@ -75,23 +75,24 @@ public class ServerWorld implements IUpdatable {
 				ClientServerData client = server.getClientManager().getClient(i);
 				
 				if(client != null) {
-					//System.out.println("swag " + j++);
-					switch(client.getDirection()) {
-					case 0:
-						client.setY(client.getY() + 1);
-						break;
-					case 1:
-						client.setX(client.getX() + 1);
-						break;
-					case 2:
-						client.setY(client.getY() - 1);
-						break;
-					case 3:
-						client.setX(client.getX() - 1);
-						break;
+					if(client.isAlive()) {
+						switch(client.getDirection()) {
+						case 0:
+							client.setY(client.getY() + 1);
+							break;
+						case 1:
+							client.setX(client.getX() + 1);
+							break;
+						case 2:
+							client.setY(client.getY() - 1);
+							break;
+						case 3:
+							client.setX(client.getX() - 1);
+							break;
+						}
+						
+						ServerConnection.sendUDP(ENetworkMessages.CIENT_UPDATE, client.getId(), client.getX(), client.getY(), client.getDirection());
 					}
-					
-					ServerConnection.sendUDP(ENetworkMessages.CIENT_UPDATE, client.getId(), client.getX(), client.getY(), client.getDirection());
 				}
 			}
 			
@@ -110,6 +111,12 @@ public class ServerWorld implements IUpdatable {
 		int yPos = (int)(MIN_Y + (Math.random() * (MAX_Y - MIN_Y)));
 		
 		return new Vector2i(xPos, yPos);
+	}
+	
+	public void endGame(int winner) {
+		isIngame = false;
+		
+		ServerConnection.sendUDP(ENetworkMessages.SERVER_END, winner);
 	}
 	
 	public boolean isIngame() {

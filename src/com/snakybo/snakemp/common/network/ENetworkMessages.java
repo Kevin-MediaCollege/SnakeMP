@@ -23,7 +23,13 @@ public enum ENetworkMessages {
 	SERVER_CLIENT_INFO                  (0x15),    // Format: 1[id] 2[name] 3[color.r] 4[color.g] 5[color.b]
 	
 	SERVER_COUNTDOWN_CHANGE             (0x16),    // Format: 1[state (0/1)]
-	SERVER_START_GAME                   (0x17);
+	SERVER_START_GAME                   (0x17),
+	
+	CLIENT_STOLE_PARTS                  (0x18),    // Format: 2[id] 3[fromIndex]
+	CLIENT_DIED                         (0x19),    // Format: 1[id]
+	CLIENT_GROWN                        (0x20),    // Format: 1[id]
+	
+	SERVER_END                          (0x21);    // Format: 1[id]
 	
 	private final int id;
 	

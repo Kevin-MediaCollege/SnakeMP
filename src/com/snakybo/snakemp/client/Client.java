@@ -41,7 +41,7 @@ public class Client implements IUpdatable, IRenderable {
 	@Override
 	public void update(Input input, float delta) {
 		if(countdownTimer.isRunning()) {
-			if(countdownIterations == 1) { // FIXME: set to 5
+			if(countdownIterations == 5) {
 				countdownIterations = 0;
 				ClientConnection.sendUDP(ENetworkMessages.CLIENT_LOADED, String.valueOf(getPlayer().getId()));
 				countdownTimer.stop();
@@ -56,7 +56,7 @@ public class Client implements IUpdatable, IRenderable {
 			newScreen = null;
 		}
 		
-		if(clientWorld != null) {
+		if(clientWorld != null && clientWorld.should()) {
 			getPlayer().update(input, delta);
 			clientWorld.update(input, delta);
 		}
@@ -78,6 +78,12 @@ public class Client implements IUpdatable, IRenderable {
 	
 	public void destroy() {
 		ClientConnection.destroy();
+	}
+	
+	public void endGame(int id) {
+		clientWorld.end();
+		
+		//Screen.SCREEN_GAME.addWinner(id);
 	}
 	
 	public void onServerJoin(String stringId) {
